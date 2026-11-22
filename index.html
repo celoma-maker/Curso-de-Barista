@@ -60,6 +60,9 @@ body.landing .shell{grid-template-columns:1fr}
 body.landing .side{display:none}
 body.landing .menu-btn{display:none!important}
 .side{border-right:1px solid var(--line);background:var(--surface);padding:18px 0 40px;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto}
+.side-mats{display:block;margin:0 16px 16px;padding:12px 14px;border:1.5px solid var(--ink);border-radius:6px;text-decoration:none;color:var(--ink);font-weight:700;background:var(--paper)}
+.side-mats span{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+.side-mats:hover{border-color:var(--cherry);color:var(--cherry)}
 .side h2{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:0 20px 8px;font-weight:700}
 .mod{border-top:1px solid var(--line)}
 .mod > button{width:100%;display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;text-align:left;background:none;border:0;padding:12px 20px;cursor:pointer}
@@ -370,8 +373,9 @@ dl.gl dd{margin:0}
 @media (max-width:620px){
   .top{gap:8px;padding:10px 12px}
   .top nav .tab.hide-sm{display:none}
-  .brand-txt span{display:none}
-  .brand-txt b{font-size:17px}
+  .brand-txt{display:none}
+  .top nav{gap:2px}
+  .tab{padding:6px 8px;font-size:14px}
   .proof{grid-template-columns:1fr 1fr}
   .proof div:nth-child(2){border-right:0}
   .proof div:nth-child(-n+2){border-bottom:1px solid var(--line)}
@@ -387,6 +391,7 @@ dl.gl dd{margin:0}
   .wa-long{display:none}
   .method-art{width:80px;height:80px}
 }
+@media (max-width:430px){.ring{display:none}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -398,7 +403,7 @@ dl.gl dd{margin:0}
     <a class="tab hide-sm" href="#inicio" data-nav="inicio">Início</a>
     <a class="tab" href="#curso" data-nav="curso">Curso</a>
     <a class="tab" href="#ferramentas" data-nav="ferramentas">Ferramentas</a>
-    <a class="tab hide-sm" href="#materiais" data-nav="materiais">Materiais</a>
+    <a class="tab" href="#materiais" data-nav="materiais">Materiais</a>
     <a class="tab hide-sm" href="#certificado" data-nav="certificado">Certificado</a>
     <div class="ring" title="Seu progresso"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15" fill="none" stroke="var(--line)" stroke-width="4"/><circle id="ringArc" cx="18" cy="18" r="15" fill="none" stroke="var(--ok)" stroke-width="4" stroke-linecap="round" stroke-dasharray="0 100" transform="rotate(-90 18 18)" pathLength="100"/></svg><span id="ringTxt">0%</span></div>
   </nav>
@@ -911,7 +916,7 @@ function nextLesson(){ return ALL.find(x=>!S.done[x.l.id]) || ALL[0]; }
    ============================================================ */
 let openMods = new Set(["m1"]);
 function renderSide(cur){
-  let h = `<h2>Conteúdo · ${ALL.length} aulas · ${hrs()} h</h2>`;
+  let h = `<a href="#materiais" class="side-mats">Materiais para download<span>Apostila, receitas, roda de aromas</span></a><h2>Conteúdo · ${ALL.length} aulas · ${hrs()} h</h2>`;
   MODULES.forEach(m=>{
     const done = m.lessons.filter(l=>S.done[l.id]).length, isOpen = openMods.has(m.id);
     h += `<div class="mod" data-open="${isOpen}"><button aria-expanded="${isOpen}" data-mod="${m.id}"><span class="num">${m.n}</span><span><span class="mt">${esc(m.title)}</span><br><span class="mc">${done}/${m.lessons.length} aulas${quizPassed(m)?" · teste ok":""}</span></span>${m.optional?'<span class="opt-tag">opcional</span>':'<span></span>'}</button><ul>`;
@@ -942,7 +947,7 @@ function viewLanding(){
         <div><i>03</i><span><b>Certificado PT ou EN</b>Emitido ao concluir o curso</span></div>
         <div><i>04</i><span><b>Ferramentas exclusivas</b>Calculadora, timer guiado e diagnóstico</span></div>
       </div>
-      <div class="row"><a class="btn red" href="#${started?"aula-"+nx.l.id:"curso"}">${started?"Continuar de onde parei":"Começar o curso"}</a><a class="btn light" href="${waLink("Olá, Marcelo! Quero saber mais sobre o curso online Barista em Casa.")}" target="_blank" rel="noopener">Falar com o Marcelo</a></div>
+      <div class="row"><a class="btn red" href="#${started?"aula-"+nx.l.id:"curso"}">${started?"Continuar de onde parei":"Começar o curso"}</a><a class="btn light" href="#materiais">Baixar materiais</a></div>
     </div>
     <div class="hero-photo"><img src="${IMG("hero-marcelo")}" alt="Marcelo Oliveira preparando café em um evento do Bilu Coffee"><div class="cap"><b>Receita da casa</b>V60 · ${r.dose} g · ${r.water} g<br>${r.grind} · ${r.temp} · ${r.time}</div></div>
   </div></section>

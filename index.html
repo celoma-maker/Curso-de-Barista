@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Barista em Casa — Escola do Barista</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Zilla+Slab:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Plano: papel e tinta como o logo Bilu (preto e branco, slab carimbado), acento único "cereja do café".
+   Layout: barra superior + trilha de módulos à esquerda + aula/ferramenta no centro. Dados técnicos em fonte de máquina de escrever. */
+:root{
+  --paper:#F3F2EE;
+  --surface:#FFFFFF;
+  --ink:#16120F;
+  --muted:#5E5751;
+  --line:#D9D5CE;
+  --cherry:#A4282C;
+  --cherry-soft:#F4E3E2;
+  --ok:#2F6B3E;
+  --ok-soft:#E2EFE4;
+  --warn:#8A5A00;
+  --warn-soft:#F6ECD6;
+  --video:#1C1714;
+  --display:"Alfa Slab One", "Rockwell", "Courier New", serif;
+  --head:"Zilla Slab", "Rockwell", Georgia, serif;
+  --body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono:"Courier Prime", "Courier New", monospace;
+  --logo-filter:none;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#15110F; --surface:#1E1916; --ink:#EEE8E1; --muted:#ABA198; --line:#3A322C;
+    --cherry:#E2676A; --cherry-soft:#3A1F1F; --ok:#7CC48D; --ok-soft:#1E3324; --warn:#E2B250; --warn-soft:#3A2F17;
+    --video:#0B0908; --logo-filter:invert(1); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#15110F; --surface:#1E1916; --ink:#EEE8E1; --muted:#ABA198; --line:#3A322C;
+  --cherry:#E2676A; --cherry-soft:#3A1F1F; --ok:#7CC48D; --ok-soft:#1E3324; --warn:#E2B250; --warn-soft:#3A2F17;
+  --video:#0B0908; --logo-filter:invert(1); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--cherry)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--cherry);outline-offset:2px;border-radius:4px}
+h1,h2,h3,h4{font-family:var(--head);line-height:1.15;text-wrap:balance;margin:0}
+.mono{font-family:var(--mono)}
+img{max-width:100%}
+
+/* Barra superior */
+.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;padding:10px 20px;background:var(--surface);border-bottom:2px solid var(--ink)}
+.top .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
+.top .brand img{width:42px;height:42px;filter:var(--logo-filter)}
+.brand-txt{display:flex;flex-direction:column;line-height:1.1}
+.brand-txt b{font-family:var(--head);font-size:19px;font-weight:700}
+.brand-txt span{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.top nav{margin-left:auto;display:flex;gap:6px;align-items:center}
+.tab{background:none;border:1px solid transparent;padding:7px 12px;border-radius:6px;cursor:pointer;font-weight:600;font-size:15px;text-decoration:none;color:var(--ink)}
+.tab:hover{border-color:var(--line)}
+.tab[aria-current="page"]{background:var(--ink);color:var(--paper)}
+.ring{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.ring svg{width:34px;height:34px}
+.menu-btn{display:none;background:none;border:1px solid var(--line);border-radius:6px;padding:7px 10px;cursor:pointer;font-weight:600}
+
+/* Estrutura */
+.shell{display:grid;grid-template-columns:310px minmax(0,1fr);min-height:calc(100% - 64px)}
+.side{border-right:1px solid var(--line);background:var(--surface);padding:18px 0 40px;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto}
+.side h2{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:0 20px 8px;font-weight:700}
+.mod{border-top:1px solid var(--line)}
+.mod > button{width:100%;display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;text-align:left;background:none;border:0;padding:12px 20px;cursor:pointer}
+.mod > button:hover{background:var(--paper)}
+.mod .num{font-family:var(--display);font-size:20px;color:var(--cherry);line-height:1}
+.mod .mt{font-weight:700;font-size:15px;line-height:1.25}
+.mod .mc{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mod ul{list-style:none;margin:0;padding:0 0 8px}
+.mod[data-open="false"] ul{display:none}
+.mod li a{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:start;padding:7px 20px 7px 30px;text-decoration:none;color:var(--ink);font-size:15px;line-height:1.3}
+.mod li a:hover{background:var(--paper)}
+.mod li a[aria-current="page"]{background:var(--cherry-soft);box-shadow:inset 3px 0 0 var(--cherry)}
+.mod li .dur{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.chk{width:18px;height:18px;border:1.5px solid var(--muted);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-top:1px}
+.chk.on{background:var(--ok);border-color:var(--ok)}
+.chk.on::after{content:"";width:8px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+.chk.quiz{border-radius:3px}
+.opt-tag{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--line);border-radius:3px;padding:0 5px;color:var(--muted)}
+
+main{padding:36px clamp(16px,4vw,56px) 80px;min-width:0}
+.wrap{max-width:820px;margin:0 auto}
+.eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--cherry);font-weight:700}
+.lede{font-size:20px;color:var(--muted);max-width:60ch}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:6px;border:2px solid var(--ink);background:var(--ink);color:var(--paper);font-weight:700;cursor:pointer;text-decoration:none;font-size:16px}
+.btn:hover{background:var(--cherry);border-color:var(--cherry);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* Início */
+.hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:40px;align-items:center;max-width:1100px;margin:0 auto 40px}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(48px,7.5vw,96px);line-height:.95;letter-spacing:-.01em;margin:12px 0 18px}
+.hero h1 em{font-style:normal;color:var(--cherry)}
+.ticket{background:var(--surface);border:1px solid var(--line);padding:22px 24px;font-family:var(--mono);font-size:15px;line-height:1.55;position:relative;transform:rotate(1.2deg);box-shadow:0 12px 30px -18px rgba(0,0,0,.45)}
+.ticket::before,.ticket::after{content:"";position:absolute;left:0;right:0;height:10px;background:radial-gradient(circle at 6px 0,var(--paper) 5px,transparent 5.5px) repeat-x;background-size:12px 10px}
+.ticket::before{top:-1px}
+.ticket::after{bottom:-1px;transform:rotate(180deg)}
+.ticket h3{font-family:var(--mono);font-size:15px;text-transform:uppercase;letter-spacing:.12em;text-align:center;margin:6px 0 4px}
+.ticket .sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:10px}
+.ticket .ln{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:3px 0}
+.ticket .ln b{font-weight:700}
+.ticket .foot{text-align:center;margin-top:12px;font-size:13px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border:2px solid var(--ink);background:var(--surface);max-width:1100px;margin:0 auto 44px}
+.stats div{padding:16px 18px;border-right:1px solid var(--line)}
+.stats div:last-child{border-right:0}
+.stats b{display:block;font-family:var(--display);font-weight:400;font-size:32px;line-height:1}
+.stats span{font-size:14px;color:var(--muted)}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;max-width:1100px;margin:0 auto 16px}
+.section-h h2{font-size:30px}
+.grid-mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;max-width:1100px;margin:0 auto 48px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:8px;transition:border-color .15s, transform .15s}
+a.card:hover{border-color:var(--ink);transform:translateY(-2px)}
+.card .num{font-family:var(--display);font-size:34px;color:var(--cherry);line-height:1}
+.card h3{font-size:20px}
+.card p{margin:0;font-size:15px;color:var(--muted)}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:auto}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:3px}
+.how{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:1100px;margin:0 auto 48px;counter-reset:how}
+.how div{padding:0 18px 0 0;border-left:2px solid var(--ink);padding-left:16px}
+.how div b{display:block;font-family:var(--head);font-size:19px;margin-bottom:4px}
+.how div::before{counter-increment:how;content:"0" counter(how);font-family:var(--mono);color:var(--cherry);font-weight:700;font-size:14px}
+.how p{margin:0;font-size:15px;color:var(--muted)}
+.instr{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;max-width:1100px;margin:0 auto;background:var(--ink);color:var(--paper);padding:28px;border-radius:8px}
+.instr img{width:110px;height:110px;filter:invert(1)}
+:root[data-theme="dark"] .instr img{filter:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .instr img{filter:none}}
+.instr h3{font-size:26px;margin-bottom:6px}
+.instr p{margin:0 0 12px;opacity:.85;max-width:62ch}
+.instr .btn{background:var(--cherry);border-color:var(--cherry);color:#fff}
+
+/* Aula */
+.crumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:8px}
+.lesson h1{font-size:clamp(30px,4vw,42px);margin:4px 0 14px}
+.meta{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:14px;color:var(--muted);margin-bottom:22px}
+.video{aspect-ratio:16/9;background:var(--video);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#EDE6DE;text-align:center;padding:20px;position:relative;overflow:hidden;margin-bottom:26px}
+.video::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 46px,rgba(255,255,255,.03) 46px 47px)}
+.play{width:74px;height:74px;border-radius:50%;border:2px solid #EDE6DE;display:flex;align-items:center;justify-content:center;position:relative}
+.play::after{content:"";border-left:22px solid #EDE6DE;border-top:13px solid transparent;border-bottom:13px solid transparent;margin-left:6px}
+.video .vt{font-family:var(--mono);font-size:14px;letter-spacing:.08em;text-transform:uppercase;position:relative}
+.video .vs{font-size:14px;opacity:.7;position:relative;max-width:44ch}
+.video a{position:relative;color:#fff}
+.goal{border-left:4px solid var(--cherry);background:var(--surface);padding:14px 18px;margin:0 0 24px;border-radius:0 6px 6px 0}
+.goal b{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--cherry);display:block}
+.prose{max-width:68ch}
+.prose p{margin:0 0 14px}
+.prose h3{font-size:22px;margin:28px 0 10px}
+.prose ul,.prose ol{padding-left:22px;margin:0 0 16px}
+.prose li{margin-bottom:6px}
+.recipe{background:var(--surface);border:2px solid var(--ink);border-radius:8px;margin:22px 0;overflow:hidden}
+.recipe header{background:var(--ink);color:var(--paper);padding:10px 16px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.recipe header b{font-family:var(--head);font-size:19px}
+.recipe header a,.recipe header button{color:var(--paper);font-family:var(--mono);font-size:13px;background:none;border:1px solid rgba(255,255,255,.4);border-radius:4px;padding:3px 9px;cursor:pointer;text-decoration:none}
+.specs{display:grid;grid-template-columns:repeat(4,1fr)}
+.specs div{padding:12px 16px;border-right:1px solid var(--line)}
+.specs div:last-child{border-right:0}
+.specs span{display:block;font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.specs b{font-family:var(--mono);font-size:18px;font-variant-numeric:tabular-nums}
+.recipe ol{margin:0;padding:14px 16px 16px 40px;border-top:1px solid var(--line)}
+.recipe ol li{margin-bottom:6px}
+.recipe ol li .t{font-family:var(--mono);font-weight:700;color:var(--cherry)}
+.callout{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:14px 16px;border-radius:6px;margin:18px 0}
+.callout .ic{font-family:var(--mono);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em;padding-top:2px}
+.callout p{margin:0}
+.callout.err{background:var(--warn-soft)}
+.callout.err .ic{color:var(--warn)}
+.callout.tip{background:var(--ok-soft)}
+.callout.tip .ic{color:var(--ok)}
+table.t{width:100%;border-collapse:collapse;font-size:15px;margin:10px 0 20px}
+.tscroll{overflow-x:auto}
+table.t th{text-align:left;font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border-bottom:2px solid var(--ink);padding:8px 10px}
+table.t td{border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:top}
+.task{background:var(--surface);border:1px dashed var(--ink);border-radius:8px;padding:16px 18px;margin:26px 0}
+.task label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.task input{width:20px;height:20px;accent-color:var(--ok);margin-top:3px;flex:none}
+.task b{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.1em;display:block}
+.pager{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:2px solid var(--ink);padding-top:20px;margin-top:30px}
+.pager a{text-decoration:none;color:var(--ink);display:flex;flex-direction:column;max-width:45%}
+.pager a span{font-family:var(--mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.pager a b{font-family:var(--head);font-size:18px}
+.pager a.next{text-align:right;margin-left:auto}
+.done-badge{display:inline-flex;align-items:center;gap:6px;color:var(--ok);font-weight:700}
+
+/* Teste */
+.q{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;margin-bottom:14px}
+.q h3{font-family:var(--body);font-size:18px;font-weight:700;margin-bottom:10px}
+.q .n{font-family:var(--mono);color:var(--cherry);margin-right:6px}
+.q label{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border:1px solid var(--line);border-radius:6px;margin-bottom:6px;cursor:pointer}
+.q label:hover{border-color:var(--ink)}
+.q input{margin-top:5px;accent-color:var(--cherry)}
+.q label.right{border-color:var(--ok);background:var(--ok-soft)}
+.q label.wrong{border-color:var(--cherry);background:var(--cherry-soft)}
+.q .exp{font-size:15px;color:var(--muted);margin:8px 0 0;display:none}
+.q.checked .exp{display:block}
+.score{padding:18px;border-radius:8px;margin:18px 0;font-size:18px}
+.score.pass{background:var(--ok-soft);border:1px solid var(--ok)}
+.score.fail{background:var(--warn-soft);border:1px solid var(--warn)}
+
+/* Ferramentas */
+.tools-tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:2px solid var(--ink);margin:18px 0 26px}
+.tools-tabs button{background:none;border:0;border-bottom:4px solid transparent;padding:10px 14px;font-weight:700;cursor:pointer;margin-bottom:-2px}
+.tools-tabs button[aria-selected="true"]{border-bottom-color:var(--cherry);color:var(--cherry)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.chip{border:1.5px solid var(--line);background:var(--surface);padding:6px 12px;border-radius:20px;cursor:pointer;font-weight:600;font-size:15px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:20px}
+.field{margin-bottom:16px}
+.field label{display:block;font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper button{width:40px;height:44px;border:1.5px solid var(--line);background:var(--paper);border-radius:6px;cursor:pointer;font-size:20px;font-weight:700}
+.stepper input{width:110px;height:44px;border:1.5px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);font-family:var(--mono);font-size:22px;text-align:center}
+input[type=range]{width:100%;accent-color:var(--cherry)}
+.big{font-family:var(--mono);font-size:44px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-size:18px;color:var(--muted);font-weight:400}
+.out{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.out div span{display:block;font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.out div b{font-family:var(--mono);font-size:22px;font-variant-numeric:tabular-nums}
+.timer{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.clock{font-family:var(--mono);font-size:clamp(64px,10vw,104px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.now{border:2px solid var(--cherry);border-radius:8px;padding:16px;margin:16px 0;background:var(--cherry-soft)}
+.now span{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--cherry);font-weight:700}
+.now b{display:block;font-family:var(--head);font-size:26px;margin:2px 0}
+.now p{margin:0}
+.steps-list{list-style:none;margin:0;padding:0}
+.steps-list li{display:grid;grid-template-columns:62px 1fr auto;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.steps-list li .t{font-family:var(--mono);font-weight:700}
+.steps-list li .g{font-family:var(--mono);color:var(--muted)}
+.steps-list li.past{opacity:.45}
+.steps-list li.cur{color:var(--cherry)}
+.diag-btns{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:20px}
+.diag-btns button{text-align:left;padding:14px;border:1.5px solid var(--line);background:var(--surface);border-radius:8px;cursor:pointer}
+.diag-btns button b{display:block;font-size:17px}
+.diag-btns button span{font-size:14px;color:var(--muted)}
+.diag-btns button[aria-pressed="true"]{border-color:var(--cherry);box-shadow:inset 0 0 0 1px var(--cherry)}
+.diag-out h3{font-size:24px;margin-bottom:6px}
+.search{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);font-size:17px;margin-bottom:16px}
+dl.gl{margin:0}
+dl.gl div{padding:12px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:200px 1fr;gap:16px}
+dl.gl dt{font-family:var(--head);font-weight:700;font-size:18px}
+dl.gl dd{margin:0}
+
+/* Certificado */
+.req{list-style:none;padding:0;margin:0 0 20px}
+.req li{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.cert-img{width:100%;border:1px solid var(--line);border-radius:6px;background:#fff;margin-top:16px}
+.lang{display:inline-flex;border:1.5px solid var(--ink);border-radius:6px;overflow:hidden}
+.lang button{border:0;background:var(--surface);padding:8px 14px;cursor:pointer;font-weight:700}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.namein{padding:11px 14px;border:1.5px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);font-size:17px;min-width:260px;flex:1}
+
+.backdrop{display:none}
+@media (max-width:960px){
+  .shell{grid-template-columns:1fr}
+  .side{position:fixed;left:0;top:64px;bottom:0;width:min(330px,88vw);height:auto;z-index:40;transform:translateX(-105%);transition:transform .2s;box-shadow:0 0 40px rgba(0,0,0,.3)}
+  body.nav-open .side{transform:none}
+  body.nav-open .backdrop{display:block;position:fixed;inset:64px 0 0 0;background:rgba(0,0,0,.35);z-index:35}
+  .menu-btn{display:inline-block}
+  .hero{grid-template-columns:1fr}
+  .ticket{transform:none;max-width:420px}
+  .calc,.timer{grid-template-columns:1fr}
+  .how{grid-template-columns:1fr 1fr;row-gap:20px}
+}
+@media (max-width:620px){
+  .top nav .tab.hide-sm{display:none}
+  .brand-txt span{display:none}
+  .stats{grid-template-columns:1fr 1fr}
+  .stats div:nth-child(2){border-right:0}
+  .stats div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .specs{grid-template-columns:1fr 1fr}
+  .specs div:nth-child(2){border-right:0}
+  .specs div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .how{grid-template-columns:1fr}
+  .instr{grid-template-columns:1fr}
+  dl.gl div{grid-template-columns:1fr;gap:2px}
+  .ring span{display:none}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <button class="menu-btn" id="menuBtn" aria-controls="side" aria-expanded="false">Módulos</button>
+  <a class="brand" href="#inicio"><img src="data:image/png;base64,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" alt="Bilu Coffee"><span class="brand-txt"><b>Barista em Casa</b><span>Escola do Barista</span></span></a>
+  <nav>
+    <a class="tab hide-sm" href="#inicio" data-nav="inicio">Início</a>
+    <a class="tab" href="#ferramentas" data-nav="ferramentas">Ferramentas</a>
+    <a class="tab hide-sm" href="#certificado" data-nav="certificado">Certificado</a>
+    <div class="ring" title="Seu progresso"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15" fill="none" stroke="var(--line)" stroke-width="4"/><circle id="ringArc" cx="18" cy="18" r="15" fill="none" stroke="var(--ok)" stroke-width="4" stroke-linecap="round" stroke-dasharray="0 100" transform="rotate(-90 18 18)" pathLength="100"/></svg><span id="ringTxt">0%</span></div>
+  </nav>
+</header>
+<div class="backdrop" id="backdrop"></div>
+<div class="shell">
+  <aside class="side" id="side" aria-label="Módulos do curso"></aside>
+  <main id="main" tabindex="-1"></main>
+</div>
+
+<script>
+/* ============================================================
+   CONTEÚDO DO CURSO
+   Para colocar o vídeo de uma aula, cole o link em  video: ""
+   (ex.: link do YouTube não listado, Vimeo ou da área de membros).
+   ============================================================ */
+const COURSE = {
+  name: "Barista em Casa",
+  school: "Escola do Barista",
+  instructor: "Marcelo Oliveira",
+  contact: { phone: "(11) 99562-9279", email: "marcelo@bilucoffee.com.br", site: "https://www.escoladobarista.com.br", ig: "https://www.instagram.com/escoladobarista" }
+};
+
+const R = { // receitas de referência (alimentam calculadora e timer)
+  v60:{name:"Hario V60",dose:15,water:250,grind:"Média-fina",temp:"93 °C",time:"2:30–3:00",lesson:"4-2",
+    steps:[{t:0,to:40,b:"Bloom",n:"Molhe todo o café em espiral, do centro para fora."},{t:40,to:150,b:"1º despejo",n:"Fio fino e constante, em círculos."},{t:75,to:250,b:"2º despejo",n:"Complete até o peso final sem tocar no papel."},{t:105,b:"Drenagem",n:"Dê um giro leve no V60 para nivelar a cama de café."},{t:165,b:"Pronto",n:"Retire o V60, misture a jarra e sirva.",end:true}]},
+  melitta:{name:"Melitta",dose:20,water:300,grind:"Média-fina",temp:"93 °C",time:"3:00–3:30",lesson:"4-3",
+    steps:[{t:0,to:50,b:"Bloom",n:"Molhe todo o café."},{t:40,to:180,b:"1º despejo",n:"Em espiral, sem encher até a borda."},{t:90,to:300,b:"2º despejo",n:"Complete aos poucos."},{t:130,b:"Drenagem",n:"Espere a água passar."},{t:195,b:"Pronto",n:"Misture e sirva.",end:true}]},
+  chemex:{name:"Chemex",dose:30,water:500,grind:"Média-grossa",temp:"94 °C",time:"4:00–4:30",lesson:"4-4",
+    steps:[{t:0,to:75,b:"Bloom",n:"Molhe todo o café."},{t:45,to:250,b:"1º despejo",n:"Espiral lenta."},{t:90,to:400,b:"2º despejo",n:"Mantenha o nível da água estável."},{t:135,to:500,b:"3º despejo",n:"Complete até 500 g."},{t:255,b:"Pronto",n:"Retire o filtro, gire a Chemex e sirva.",end:true}]},
+  pano:{name:"Coador de pano",dose:20,water:300,grind:"Média-fina",temp:"94 °C",time:"3:00",lesson:"4-5",
+    steps:[{t:0,to:50,b:"Bloom",n:"Molhe todo o café no pano escaldado."},{t:30,to:180,b:"1º despejo",n:"Fio constante, no centro."},{t:70,to:300,b:"2º despejo",n:"Complete devagar, sem transbordar."},{t:110,b:"Drenagem",n:"Espere a água passar pelo pano."},{t:180,b:"Pronto",n:"Sirva na hora ou na garrafa térmica.",end:true}]},
+  prensa:{name:"Prensa francesa",dose:20,water:300,grind:"Grossa",temp:"94 °C",time:"4:30",lesson:"5-1",
+    steps:[{t:0,to:300,b:"Toda a água",n:"Despeje tudo e mexa 3 vezes. Tampe sem pressionar."},{t:240,b:"Quebre a crosta",n:"Mexa a superfície com a colher e retire a espuma."},{t:255,b:"Pressione",n:"Desça o êmbolo devagar, cerca de 20 s."},{t:275,b:"Pronto",n:"Sirva tudo. Não deixe café descansando na prensa.",end:true}]},
+  clever:{name:"Clever",dose:18,water:280,grind:"Média-fina",temp:"94 °C",time:"3:15–3:30",lesson:"5-2",
+    steps:[{t:0,to:280,b:"Água e café",n:"Água primeiro, depois o café. Mexa e tampe."},{t:120,b:"Mexa",n:"Três voltas suaves com a colher."},{t:150,b:"Drene",n:"Apoie o Clever na xícara para abrir a válvula."},{t:200,b:"Pronto",n:"Quando parar de pingar, sirva.",end:true}]},
+  aeropress:{name:"Aeropress",dose:15,water:220,grind:"Média-fina",temp:"88 °C",time:"2:00",lesson:"5-3",
+    steps:[{t:0,to:220,b:"Água",n:"Despeje 220 g em cerca de 10 s."},{t:10,b:"Mexa",n:"Mexa por 10 s e encaixe o êmbolo para segurar o vácuo."},{t:90,b:"Pressione",n:"Pressão firme e constante por 20–30 s."},{t:120,b:"Pronto",n:"Pare quando ouvir o chiado.",end:true}]}
+};
+
+const MODULES = [
+{ id:"m1", n:"1", title:"Boas-vindas e kit básico", desc:"Quem ensina, o que comprar primeiro e como montar a bancada.", lessons:[
+  { id:"1-1", title:"Boas-vindas", min:5, video:"",
+    goal:"Entender como o curso funciona e o que você vai conseguir fazer no final.",
+    html:`<p>Eu sou o Marcelo Oliveira, barista e instrutor há 16 anos e fundador do Bilu Coffee e da Escola do Barista, em Santo André. Neste curso eu vou te levar do café de sempre ao café de cafeteria, feito na sua cozinha, com equipamento simples.</p>
+<p>São 8 módulos e um bônus de espresso. Cada aula tem vídeo, resumo escrito e uma tarefa prática. No fim de cada módulo há um teste rápido: acerte 75% para liberar o certificado, em português ou em inglês.</p>
+<h3>Como tirar o máximo do curso</h3>
+<ul><li>Assista na ordem. Os módulos 3 e 6 são a base de tudo.</li><li>Use a <a href="#ferramentas">calculadora e o timer de preparo</a> enquanto pratica.</li><li>Anote cada receita que fizer: dose, água, moagem, tempo e o que achou do sabor.</li></ul>
+<p>Café se aprende com a mão na chaleira. Faça a tarefa de cada aula antes de passar para a próxima.</p>`,
+    task:"Separe um caderno, ou uma nota no celular, só para as suas receitas." },
+  { id:"1-2", title:"O kit essencial", min:8, video:"",
+    goal:"Saber o que comprar primeiro e onde não vale gastar.",
+    html:`<p>O que mais muda o sabor do seu café não é o método. É, nesta ordem: café fresco, moedor, balança e água. O coador bonito vem depois.</p>
+<div class="tscroll"><table class="t"><thead><tr><th>Prioridade</th><th>Item</th><th>Por quê</th></tr></thead><tbody>
+<tr><td class="mono">1</td><td>Café especial em grão</td><td>Com data de torra no pacote. É 80% do resultado.</td></tr>
+<tr><td class="mono">2</td><td>Moedor de mós</td><td>Corta os grãos em tamanho parecido. Manual já resolve.</td></tr>
+<tr><td class="mono">3</td><td>Balança 0,1 g com timer</td><td>Receita sem peso não se repete.</td></tr>
+<tr><td class="mono">4</td><td>Chaleira bico de ganso</td><td>Controla o fio de água no coado.</td></tr>
+<tr><td class="mono">5</td><td>Um método</td><td>V60 ou o Melitta que você já tem.</td></tr>
+</tbody></table></div>`,
+    err:"Comprar um método caro e continuar usando café moído de supermercado. O resultado quase não muda.",
+    task:"Liste o que você já tem em casa e o que falta, seguindo a ordem da tabela." },
+  { id:"1-3", title:"Montando a bancada em casa", min:6, video:"",
+    goal:"Organizar um espaço que deixa o preparo rápido, limpo e repetível.",
+    html:`<p>Divida a bancada em duas áreas. De um lado, a <b>área de moagem</b>: café, moedor e pincel. Do outro, a <b>área de preparo</b>: balança, método, chaleira e xícara. Assim o pó não vai parar dentro da xícara.</p>
+<p>Deixe sempre à mão um pano seco, um pano úmido e um pote para a borra. A borra serve como adubo para vasos e horta.</p>
+<h3>Kits por orçamento</h3>
+<ul><li><b>Básico:</b> Melitta, moedor manual e balança de cozinha.</li><li><b>Intermediário:</b> V60, chaleira bico de ganso e balança com timer.</li><li><b>Completo:</b> Chemex, Aeropress, prensa francesa e moedor elétrico.</li></ul>`,
+    tip:"Coloque a balança no centro da bancada. Ela é usada em todos os preparos.",
+    task:"Monte sua bancada, tire uma foto e marque @escoladobarista no Instagram." }
+], quiz:[
+  {q:"Qual destes itens muda mais o sabor do café feito em casa?",a:["Um coador de vidro importado","Café fresco moído na hora","Xícara de porcelana","Açúcar mascavo"],c:1,e:"Café fresco e moído na hora vem antes de qualquer equipamento."},
+  {q:"Em que ano o café chegou ao Brasil, com Francisco de Melo Palheta?",a:["1500","1727","1822","1929"],c:1,e:"As primeiras mudas vieram da Guiana Francesa para o Pará em 1727."},
+  {q:"Por que o moedor de mós é melhor que o de lâmina?",a:["Faz menos barulho","Corta os grãos em tamanho uniforme","É sempre mais barato","Deixa o café mais quente"],c:1,e:"Partículas do mesmo tamanho extraem por igual. A lâmina mistura pó fino com pedaços grandes."},
+  {q:"Para que serve a balança com cronômetro?",a:["Pesar café e água e medir o tempo do preparo","Medir a temperatura da água","Só para confeitaria","Calcular calorias"],c:0,e:"Com peso e tempo anotados, você repete a receita sempre que quiser."},
+  {q:"Onde o moedor deve ficar na bancada?",a:["Ao lado da xícara de servir","Na área de moagem, separada do preparo","Dentro do armário","Ao lado do fogão aceso"],c:1,e:"Separar as áreas evita pó solto no preparo e na xícara."}
+]},
+{ id:"m2", n:"2", title:"Conhecendo o café", desc:"Espécies, processos, torra e como escolher um café especial.", lessons:[
+  { id:"2-1", title:"Do pé à xícara", min:8, video:"",
+    goal:"Entender de onde vem o café e o que faz um café ser especial.",
+    html:`<h3>Uma lenda e uma muda</h3>
+<p>Tudo começou na Etiópia, com a lenda de Kaldi, um pastor que percebeu que suas cabras ficavam agitadas depois de comer uns frutinhos vermelhos. Os árabes dominaram o plantio e o preparo, e o café chegou à Europa no século XVII.</p>
+<p>No Brasil, o café chegou em 1727, com Francisco de Melo Palheta, que trouxe as primeiras mudas da Guiana Francesa para o Pará. Hoje o Brasil é o maior produtor do mundo, posição que ocupa há mais de 150 anos.</p>
+<h3>Arábica e canéfora</h3>
+<p>Existem cerca de 124 espécies de café, mas duas dominam o mercado:</p>
+<div class="tscroll"><table class="t"><thead><tr><th></th><th>Arábica</th><th>Canéfora (robusta, conilon)</th></tr></thead><tbody>
+<tr><td>Sabor</td><td>Mais aroma, doçura e acidez</td><td>Mais corpo e creme, mais amargor</td></tr>
+<tr><td>Cafeína</td><td class="mono">~1,2%</td><td class="mono">~2,2%</td></tr>
+<tr><td>Açúcares</td><td class="mono">6 a 9%</td><td class="mono">3 a 7%</td></tr>
+<tr><td>Cultivo</td><td>Altitudes de 800 a 2.200 m, mais sensível</td><td>Altitudes de 0 a 900 m, mais resistente</td></tr>
+<tr><td>Produção mundial</td><td class="mono">~60%</td><td class="mono">~40%</td></tr>
+</tbody></table></div>
+<h3>Por dentro do fruto</h3>
+<p>De fora para dentro: casca, polpa, mucilagem (uma camada açucarada), pergaminho, película prateada e, no centro, o grão. Em geral são dois grãos por fruto. Cerca de 5% dos frutos têm um grão só, arredondado: é o <b>grão moca</b>, que torra de forma mais uniforme.</p>
+<h3>Os três processos</h3>
+<div class="tscroll"><table class="t"><thead><tr><th>Processo</th><th>Como é feito</th><th>O que você sente</th></tr></thead><tbody>
+<tr><td>Natural</td><td>O fruto seca inteiro, com casca e pergaminho.</td><td>Doce e encorpado, frutas maduras.</td></tr>
+<tr><td>Cereja descascado (CD ou honey)</td><td>Tira a casca e seca com a mucilagem sobre o pergaminho.</td><td>Equilíbrio entre doçura e acidez. Muito comum no Brasil.</td></tr>
+<tr><td>Lavado (despolpado)</td><td>Tira casca e mucilagem; o pergaminho é lavado.</td><td>Xícara limpa, acidez marcante.</td></tr>
+</tbody></table></div>
+<p>Terroir é o conjunto de solo, clima, altitude e manejo de cada região. Regiões diferentes dão sabores diferentes, por isso o rótulo informa a origem.</p>`,
+    task:"Pegue um pacote de café que você tem em casa e procure a espécie, o processo e a região no rótulo." },
+  { id:"2-2", title:"Torra e como ler o rótulo", min:8, video:"",
+    goal:"Escolher a torra certa para métodos manuais e ler um rótulo de café especial.",
+    html:`<p>A torra é responsável por grande parte do aroma e do sabor. O grão verde tem cerca de 300 compostos químicos, e na torra eles viram mais de 650. Duas reações fazem a mágica: a <b>reação de Maillard</b>, entre açúcares e aminoácidos, a mesma que doura a carne na grelha, e a <b>caramelização</b> dos açúcares.</p>
+<div class="tscroll"><table class="t"><thead><tr><th>Torra</th><th>Escala Agtron</th><th>Na xícara</th></tr></thead><tbody>
+<tr><td>Clara</td><td class="mono">75 a 95</td><td>Mais acidez e aroma, pouco corpo e amargor.</td></tr>
+<tr><td>Média</td><td class="mono">55 a 65</td><td>Máximo de doçura e corpo, equilíbrio. Indicada para coados.</td></tr>
+<tr><td>Escura</td><td class="mono">25 a 45</td><td>Amargor alto, óleo brilhando no grão, esconde defeitos.</td></tr>
+</tbody></table></div>
+<p>Quando a torra passa do ponto, os açúcares carbonizam e o café vira "água de carvão": sem corpo e só amargo. Para métodos manuais em casa, prefira torra média ou média-clara.</p>
+<h3>Da bebida dura ao café especial</h3>
+<p>A Classificação Oficial Brasileira (COB) separa a bebida do arábica em 7 níveis, do melhor ao pior: <b>estritamente mole, mole, apenas mole, dura, riada, rio e rio zona</b>. Bebida mole é doce e suave; bebida dura é áspera e adstringente; a partir de riada aparece gosto de iodofórmio, de remédio.</p>
+<p>Já a SCA avalia fragrância e aroma, sabor, acidez, corpo, doçura, finalização, equilíbrio, uniformidade e ausência de defeitos. Com 80 pontos ou mais, o café é especial.</p>
+<h3>O que procurar no rótulo</h3>
+<ul><li><b>Origem:</b> fazenda e região, como Mantiqueira de Minas ou Cerrado Mineiro.</li><li><b>Variedade:</b> Catuaí, Bourbon, Mundo Novo, Arara.</li><li><b>Processo:</b> natural, cereja descascado ou lavado.</li><li><b>Notas sensoriais:</b> o que o torrador sentiu na prova.</li><li><b>Data de torra:</b> a informação mais importante.</li></ul>`,
+    err:"Escolher pela data de validade. Para coados, o café costuma estar no melhor momento entre 1 e 4 semanas depois da torra.",
+    task:"Fotografe o rótulo do seu café e encontre pelo menos 4 das 5 informações acima." },
+  { id:"2-3", title:"Comprar e armazenar", min:6, video:"",
+    goal:"Manter o café fresco do primeiro ao último dia do pacote.",
+    html:`<p>Compre de torrefações e cafeterias que informam a data de torra. Prefira pacotes de 250 g, que você termina em poucas semanas.</p>
+<p>Guarde o café em grão na embalagem original com válvula, bem fechada, ou em pote hermético opaco. Mantenha longe de luz, calor e umidade.</p>
+<p>Depois de aberto, consuma o pacote em até 30 dias. Moa só na hora de preparar: depois de moído, o café perde boa parte do aroma em poucos minutos.</p>
+<h3>E o café pronto?</h3>
+<ul><li>Na garrafa térmica, o café mantém a qualidade por cerca de 1 hora.</li><li>Não adoce o café na garrafa. Açúcar, água e calor fazem a bebida fermentar. Adoce na xícara, se quiser.</li></ul>
+<h3>Descafeinado também pode ser especial</h3>
+<p>Existem descafeinados especiais feitos pelo processo Swiss Water, que tira a cafeína só com água, sem solventes químicos.</p>`,
+    err:"Guardar na geladeira no dia a dia. O café absorve umidade e o cheiro dos outros alimentos.",
+    task:"Compre um café especial em grão para usar durante o curso." }
+], quiz:[
+  {q:"Qual a nota mínima para um café ser considerado especial pela SCA?",a:["60 pontos","70 pontos","80 pontos","95 pontos"],c:2,e:"A partir de 80 pontos na escala de 0 a 100."},
+  {q:"Qual processo tende a deixar o café mais doce e com notas de fruta madura?",a:["Lavado","Natural","Solúvel","Descafeinado"],c:1,e:"No natural, o grão seca dentro do fruto e absorve doçura."},
+  {q:"Qual espécie tem mais cafeína?",a:["Arábica","Canéfora (robusta, conilon)","As duas têm a mesma","Nenhuma tem cafeína"],c:1,e:"Cerca de 2,2% no canéfora contra 1,2% no arábica."},
+  {q:"Na Classificação Oficial Brasileira, qual é a melhor bebida?",a:["Rio zona","Dura","Estritamente mole","Riada"],c:2,e:"A escala vai de estritamente mole (melhor) até rio zona."},
+  {q:"Qual informação diz se o café está fresco?",a:["Data de validade","Data de torra","Peso do pacote","Código de barras"],c:1,e:"A validade pode ser de um ano. A data de torra mostra o frescor real."},
+  {q:"Onde guardar o café no dia a dia?",a:["Na geladeira","Em pote hermético, longe de luz e calor","Aberto, ao lado do fogão","No freezer, já moído"],c:1,e:"Luz, calor, umidade e ar são os inimigos do café."}
+]},
+{ id:"m3", n:"3", title:"Moagem, água e proporção", desc:"As 4 variáveis que controlam qualquer método.", lessons:[
+  { id:"3-1", title:"Moagem", min:10, video:"",
+    goal:"Escolher e regular a moagem certa para cada método.",
+    html:`<p>A moagem controla a velocidade da extração. Quanto mais fino, maior a área de contato com a água: o café extrai mais e a água passa mais devagar. Quanto mais grosso, o contrário.</p>
+<div class="tscroll"><table class="t"><thead><tr><th>Moagem</th><th>Parece com</th><th>Métodos</th></tr></thead><tbody>
+<tr><td>Fina</td><td>Sal refinado</td><td>Espresso; moka entre fina e média-fina</td></tr>
+<tr><td>Média-fina</td><td>Areia fina</td><td>V60, Melitta, coador de pano, Clever, Aeropress</td></tr>
+<tr><td>Média</td><td>Açúcar cristal</td><td>Koar</td></tr>
+<tr><td>Média-grossa</td><td>Açúcar demerara</td><td>Chemex</td></tr>
+<tr><td>Grossa</td><td>Sal grosso</td><td>Prensa francesa, cold brew</td></tr>
+</tbody></table></div>
+<div class="tscroll"><table class="t"><thead><tr><th>Quanto mais grossa</th><th>Quanto mais fina</th></tr></thead><tbody>
+<tr><td>Extração mais rápida</td><td>Extração mais lenta</td></tr>
+<tr><td>Café mais suave</td><td>Café mais intenso</td></tr>
+<tr><td>Mais acidez e doçura aparente</td><td>Menos acidez, mais amargor</td></tr>
+</tbody></table></div>
+<h3>Que moedor ter em casa</h3>
+<ul><li><b>Elétrico de hélice (lâmina):</b> rápido, mas sem precisão. Quebra os grãos em tamanhos irregulares.</li><li><b>Manual de mós:</b> portátil e preciso, só é mais demorado. Mós de cerâmica ou aço dão ótimo resultado.</li><li><b>Elétrico de mós (semiprofissional):</b> resultado muito próximo ao dos moinhos de cafeteria.</li></ul>
+<p>Anote o ajuste do seu moedor para cada método: número de cliques no manual ou número do disco no elétrico.</p>`,
+    err:"Usar moedor de lâmina. Ele deixa pó fino e pedaços grandes juntos, e o café fica amargo e azedo ao mesmo tempo.",
+    task:"Moa um pouco de café em 3 regulagens diferentes e compare com a tabela." },
+  { id:"3-2", title:"Água e temperatura", min:7, video:"",
+    goal:"Usar a água certa, na temperatura certa.",
+    html:`<p>Um café coado tem mais de 98% de água. Se a água tem gosto, o café também vai ter.</p>
+<p>Use água filtrada ou mineral de baixa mineralização. A SCA recomenda água com 75 a 150 mg/L de sólidos dissolvidos: no rótulo da água mineral, procure o resíduo de evaporação.</p>
+<p>A temperatura de referência é de <b>90 a 96 °C</b>. Torras claras pedem a faixa mais alta, torras escuras, a mais baixa. Sem termômetro, ferva a água e espere cerca de 30 segundos.</p>`,
+    err:"Água da torneira com cheiro de cloro, ou água fervida várias vezes seguidas.",
+    task:"Prepare o mesmo café com água da torneira e com água filtrada. Prove os dois." },
+  { id:"3-3", title:"Proporção e receita", min:8, video:"",
+    goal:"Montar sua primeira receita com balança.",
+    html:`<p>Proporção é quanto café você usa para quanta água. Escrevemos assim: <b>1:15</b> quer dizer 1 g de café para cada 15 g de água.</p>
+<p>Em casa, comece entre <b>1:15 e 1:17</b>. Para coados, a SCA usa como referência 55 g de café por litro de água, cerca de 1:18. Uma colher de medida muda muito de peso conforme o café e a moagem, por isso a balança é obrigatória.</p>
+<h3>As 4 variáveis</h3>
+<ol><li><b>Dose:</b> quanto café.</li><li><b>Moagem:</b> fino ou grosso.</li><li><b>Temperatura:</b> da água.</li><li><b>Tempo:</b> de contato entre café e água.</li></ol>
+<p>Para ajustar uma receita, mude uma variável por vez. Senão você não sabe o que fez a diferença.</p>
+<p>Para quem quer ir além: a SCA define o coado ideal com 1,15% a 1,35% de sólidos dissolvidos e 18% a 22% de extração. Em casa, o seu paladar é o medidor, e o Módulo 6 ensina como usar.</p>`,
+    tip:"Use a calculadora na aba Ferramentas: digite a dose e ela mostra a água, o bloom e quanto café vai sair.",
+    task:"Monte na calculadora uma receita para 1 xícara e anote no seu caderno." }
+], quiz:[
+  {q:"O que acontece quando você moe mais fino?",a:["A extração diminui","A extração aumenta e a água passa mais devagar","Nada muda","O café fica mais ralo"],c:1,e:"Mais área de contato, mais extração e mais resistência à passagem da água."},
+  {q:"Qual moagem combina com a prensa francesa?",a:["Fina, como sal refinado","Média-fina","Grossa, como sal grosso","Pó de espresso"],c:2,e:"Moagem grossa evita amargor e passa pela tela de metal sem entupir."},
+  {q:"Com 20 g de café na proporção 1:15, quanto de água você usa?",a:["200 g","250 g","300 g","350 g"],c:2,e:"20 × 15 = 300 g."},
+  {q:"Qual a faixa de temperatura de referência para métodos manuais?",a:["60 a 70 °C","75 a 85 °C","90 a 96 °C","Sempre 100 °C, fervendo"],c:2,e:"Entre 90 e 96 °C, ajustando conforme a torra."}
+]},
+{ id:"m4", n:"4", title:"Métodos de filtro", desc:"V60, Melitta e Chemex com receita passo a passo.", lessons:[
+  { id:"4-1", title:"Como funciona o coado", min:6, video:"",
+    goal:"Entender as três etapas de qualquer coado.",
+    html:`<p>No coado, a água passa pelo café e por um filtro, de cima para baixo. Isso se chama percolação, e o resultado é uma xícara limpa e aromática.</p>
+<ol><li><b>Escaldar o filtro:</b> tira odores e resíduos do papel, satura o filtro e aquece o método e a jarra. Descarte essa água.</li><li><b>Nivelar o café:</b> acomode o pó com uma batidinha para a extração ficar por igual.</li><li><b>Bloom (pré-infusão):</b> molhe o café até cobrir, com 2 a 3 vezes o peso dele em água, e espere cerca de 30 s. O gás carbônico sai e o café fica pronto para extrair.</li><li><b>Despejos:</b> água em espiral, do centro para fora, sem jogar direto no papel.</li></ol>
+<h3>Os coadores e suas histórias</h3>
+<div class="tscroll"><table class="t"><thead><tr><th>Método</th><th>Origem</th><th>Característica</th></tr></thead><tbody>
+<tr><td>Coador de pano</td><td>Tradição brasileira</td><td>Memória afetiva, mais óleos na xícara</td></tr>
+<tr><td>Melitta</td><td>Alemanha, 1908, Amalie Melitta Bentz</td><td>Primeiro filtro de papel; furo pequeno segura a água</td></tr>
+<tr><td>Chemex</td><td>EUA, 1941, químico Peter Schlumbohm</td><td>Filtro de camada tripla, xícara limpa e delicada</td></tr>
+<tr><td>Hario V60</td><td>Japão, cone de 60°</td><td>Furo único grande e ranhuras em espiral, ressalta a acidez</td></tr>
+<tr><td>Koar</td><td>Brasil, criado em Pernambuco</td><td>Cone de 55° com 16 sulcos, favorece doçura e corpo</td></tr>
+<tr><td>Clever</td><td>Taiwan, 2010</td><td>Híbrido de imersão e coado, com válvula</td></tr>
+</tbody></table></div>`,
+    err:"Pular o bloom com café fresco. O gás forma bolhas que impedem a água de molhar o café por igual.",
+    task:"Faça um bloom e observe o café inchar e soltar bolhas." },
+  { id:"4-2", title:"Hario V60", min:10, video:"", recipe:"v60",
+    goal:"Preparar uma V60 limpa e doce, sempre igual.",
+    html:`<p>A V60 tem um furo grande e ranhuras em espiral. Quem controla a velocidade é você, com a moagem e o fio de água. Por isso ela é ótima para aprender.</p>`,
+    tip:"Terminou antes de 2:30 e ficou azedo? Moa mais fino. Passou de 3:30 e ficou amargo? Moa mais grosso.",
+    err:"Despejar água na lateral do filtro. A água escorre pelo papel sem passar pelo café.",
+    task:"Faça a receita com o timer da aba Ferramentas e anote o tempo final." },
+  { id:"4-3", title:"Melitta: o método da casa do brasileiro", min:8, video:"", recipe:"melitta",
+    goal:"Tirar o melhor do coador que quase todo mundo já tem.",
+    html:`<p>Com café fresco, balança e receita, o Melitta faz outro café. O furo pequeno segura mais a água e deixa o café mais tempo em contato com ela. Use moagem média-fina e despeje com calma.</p>`,
+    err:"Encher o filtro de água de uma vez. Transborda e extrai de forma irregular.",
+    task:"Faça o café do jeito de sempre e depois com a receita. Compare os dois." },
+  { id:"4-4", title:"Chemex", min:10, video:"", recipe:"chemex",
+    goal:"Preparar café para 2 ou 3 pessoas com xícara muito limpa.",
+    html:`<p>O filtro da Chemex é mais grosso que os outros e segura mais óleos e partículas finas. O resultado é o café mais limpo e delicado dos métodos manuais.</p>
+<p>Abra o filtro em cone com o lado de 3 dobras virado para o bico. Assim o ar passa pelo bico e o café não trava.</p>`,
+    err:"Colocar o lado de uma dobra no bico. O papel cola no vidro e a drenagem para.",
+    task:"Sirva uma Chemex para alguém da sua casa e peça a opinião." },
+  { id:"4-5", title:"Coador de pano, do jeito certo", min:7, video:"", recipe:"pano",
+    goal:"Fazer o café de pano da memória afetiva, só que com receita.",
+    html:`<p>O coador de pano é a tradição do café brasileiro. Como o pano deixa passar mais óleos que o papel, a bebida tem mais corpo e textura. Com café fresco, moagem certa e balança, ele faz um café excelente.</p>
+<h3>Cuidados com o pano</h3>
+<ul><li>Escalde bem o pano antes de cada preparo.</li><li>Depois de usar, lave só com água. Nunca use sabão: o pano absorve o cheiro.</li><li>Guarde o pano limpo dentro de um pote com água, na geladeira.</li><li>Troque o pano a cada mês.</li></ul>`,
+    err:"Lavar o pano com detergente ou deixá-lo secar sujo. O café pega gosto de sabão ou de ranço.",
+    task:"Faça o café de pano com a receita e compare com o que você fazia antes." }
+], quiz:[
+  {q:"Para que serve escaldar o filtro de papel?",a:["Deixar o café mais forte","Tirar o gosto de papel e aquecer o método","Diminuir o tempo de preparo","Adoçar o café"],c:1,e:"E lembre de descartar essa água antes do preparo."},
+  {q:"Quanta água usar no bloom para 15 g de café?",a:["10 g","Cerca de 30 a 45 g","150 g","250 g"],c:1,e:"De 2 a 3 vezes o peso do café."},
+  {q:"Sua V60 terminou em 1:50 e o café ficou azedo. O que fazer?",a:["Moer mais grosso","Moer mais fino","Usar água mais fria","Usar menos café"],c:1,e:"Rápido e azedo indica pouca extração: moa mais fino."},
+  {q:"Como lavar o coador de pano depois do uso?",a:["Só com água, sem sabão","Com detergente","Na máquina de lavar","Não precisa lavar"],c:0,e:"O pano absorve o cheiro do sabão e passa para o café."},
+  {q:"Por que o café da Chemex sai tão limpo?",a:["Usa água fervendo","O filtro é mais grosso e retém óleos e partículas","Usa moagem fina","Tem uma válvula"],c:1,e:"O filtro de papel grosso é a marca da Chemex."}
+]},
+{ id:"m5", n:"5", title:"Imersão e pressão", desc:"Prensa francesa, Clever, Aeropress e moka italiana.", lessons:[
+  { id:"5-1", title:"Prensa francesa", min:8, video:"", recipe:"prensa",
+    goal:"Fazer uma prensa encorpada e sem borra na xícara.",
+    html:`<p>Criada na França em 1852 e patenteada na Itália em 1929, a prensa é um método de imersão: o café fica de molho na água o tempo todo. A extração é uniforme e é difícil errar. O filtro de metal deixa passar óleos: o café tem mais corpo.</p>`,
+    err:"Deixar o café na prensa depois de pronto. Ele continua extraindo e fica amargo.",
+    task:"Faça a receita e prove o mesmo café que você usou na V60. Note a diferença de corpo." },
+  { id:"5-2", title:"Clever", min:7, video:"", recipe:"clever",
+    goal:"Usar a imersão com filtro de papel.",
+    html:`<p>O Clever junta o melhor dos dois mundos: a facilidade da imersão e a xícara limpa do filtro de papel. A válvula na base só abre quando você apoia o Clever na xícara.</p>
+<p>Coloque a água antes do café. Assim o café não entope o filtro e a drenagem fica mais rápida.</p>`,
+    task:"Prepare um Clever e cronometre a drenagem." },
+  { id:"5-3", title:"Aeropress", min:10, video:"", recipe:"aeropress",
+    goal:"Preparar Aeropress normal, invertida e concentrada.",
+    html:`<p>A Aeropress usa imersão curta e pressão manual. É rápida, fácil de levar em viagem e muito versátil.</p>
+<p>Foi criada nos Estados Unidos em 2005 e virou queridinha dos baristas pela versatilidade.</p>
+<h3>Normal ou invertida?</h3>
+<p><b>Normal:</b> a Aeropress fica sobre a xícara desde o início. Pinga um pouco antes de você pressionar.</p>
+<p><b>Invertida:</b> monte de ponta-cabeça, com o êmbolo embaixo. Não pinga nada, e no final você vira sobre a xícara com cuidado.</p>
+<h3>Concentrado para bebidas com leite</h3>
+<p>18 g de café em moagem fina, 90 g de água, 1 min de infusão e pressão. É a base do Módulo 7.</p>`,
+    err:"Pressionar com muita força. O café fica turvo e amargo. A pressão deve ser firme e constante.",
+    task:"Faça a receita normal e o concentrado. Guarde o concentrado para a próxima aula." },
+  { id:"5-4", title:"Moka italiana", min:8, video:"",
+    goal:"Fazer um café forte na moka sem gosto de queimado.",
+    html:`<p>Criada por Alfonso Bialetti em 1933, a moka extrai com pressão e alta temperatura. Ela não faz espresso: a pressão dela é de 1 a 2 bar, e uma máquina de espresso trabalha com cerca de 9. Mas ela faz o café forte mais acessível para ter em casa, ótimo como base para leite.</p>
+<div class="recipe"><header><b>Receita moka</b></header>
+<div class="specs"><div><span>Café</span><b>Funil cheio</b></div><div><span>Água</span><b>Até a válvula</b></div><div><span>Moagem</span><b>Fina-média</b></div><div><span>Fogo</span><b>Baixo</b></div></div>
+<ol><li>Coloque água quente na base, até logo abaixo da válvula.</li><li>Encha o funil, nivele com o dedo, sem compactar.</li><li>Feche bem, usando um pano, e leve ao fogo baixo com a tampa aberta.</li><li>Quando o café sair claro e começar a borbulhar, tire do fogo.</li><li>Esfrie a base com um pano úmido para parar a extração. Sirva.</li></ol></div>`,
+    err:"Compactar o pó e usar fogo alto. O café sai amargo e com gosto de queimado.",
+    task:"Faça uma moka e reserve o café para testar com leite no Módulo 7." }
+], quiz:[
+  {q:"Quanto tempo de infusão tem a receita de prensa francesa?",a:["1 minuto","4 minutos","10 minutos","12 horas"],c:1,e:"4 minutos, depois quebrar a crosta e pressionar."},
+  {q:"Qual a vantagem do Clever?",a:["Faz espresso","Junta imersão com filtro de papel","Dispensa a moagem","Vaporiza leite"],c:1,e:"Fácil como a prensa, limpo como o coado."},
+  {q:"Na moka, o que fazer quando o café começa a borbulhar?",a:["Aumentar o fogo","Tirar do fogo e esfriar a base","Colocar mais água","Compactar o café"],c:1,e:"Borbulhar é sinal de fim. Continuar deixa o café queimado."},
+  {q:"Por que o café da prensa tem mais corpo?",a:["O filtro de metal deixa passar óleos e partículas finas","A água é mais quente","Leva açúcar","A moagem é fina"],c:0,e:"Os óleos que o papel seguraria vão para a xícara."}
+]},
+{ id:"m6", n:"6", title:"Degustação e ajuste de receita", desc:"Prove, descubra o problema e corrija sozinho.", lessons:[
+  { id:"6-1", title:"Como provar café", min:8, video:"",
+    goal:"Descrever o que você sente na xícara.",
+    html:`<p>Provar café é prestar atenção em seis coisas:</p>
+<div class="tscroll"><table class="t"><thead><tr><th>Atributo</th><th>O que é</th><th>Para comparar</th></tr></thead><tbody>
+<tr><td>Aroma</td><td>O cheiro do café pronto</td><td>Flores, frutas, chocolate, castanhas</td></tr>
+<tr><td>Doçura</td><td>Sensação de açúcar natural</td><td>Caramelo, mel, rapadura</td></tr>
+<tr><td>Acidez</td><td>Brilho na boca, que saliva</td><td>Laranja, maçã verde. É boa, não é azedo.</td></tr>
+<tr><td>Amargor</td><td>Deve ser leve</td><td>Chocolate amargo</td></tr>
+<tr><td>Corpo</td><td>Peso na boca</td><td>Chá (leve) ou leite integral (encorpado)</td></tr>
+<tr><td>Finalização</td><td>O gosto que fica</td><td>Longa e agradável, ou curta e seca</td></tr>
+</tbody></table></div>
+<p>Sorva o café rápido, de colher, para espalhar pela boca. Prove quente, morno e frio. Um café bem preparado fica ainda melhor quando esfria.</p>`,
+    task:"Prove seu café em três temperaturas e anote os seis atributos." },
+  { id:"6-2", title:"Amargo, azedo ou ralo?", min:10, video:"", diag:true,
+    goal:"Diagnosticar o problema da xícara e saber o que mudar.",
+    html:`<p>Quase todo problema de sabor vem de extração de menos ou de mais.</p>
+<p><b>Subextração</b> é quando a água tira pouco do café: fica azedo, salgado e sem doçura. <b>Superextração</b> é quando tira demais: fica amargo, seco e áspero na língua.</p>`,
+    tip:"Na aba Ferramentas, o Diagnóstico da xícara mostra o ajuste para cada sintoma.",
+    task:"Faça o mesmo café moído fino demais, grosso demais e no ponto. Prove os três lado a lado." },
+  { id:"6-3", title:"Degustação comparada", min:7, video:"",
+    goal:"Treinar o paladar comparando xícaras.",
+    html:`<p>Comparar é a forma mais rápida de treinar o paladar. Faça de dois jeitos:</p>
+<ol><li><b>Mesmo café, métodos diferentes:</b> V60 e prensa francesa. Repare como muda o corpo.</li><li><b>Mesmo método, cafés diferentes:</b> um natural e um lavado. Repare como muda a acidez e a doçura.</li></ol>
+<p>Dê nota de 1 a 5 para cada atributo da aula 6.1. Escreva também uma palavra que resuma cada xícara.</p>`,
+    task:"Faça uma degustação comparada e poste sua ficha marcando @escoladobarista." }
+], quiz:[
+  {q:"Café azedo e salgado geralmente indica:",a:["Superextração","Subextração","Água mineral","Excesso de açúcar"],c:1,e:"A água tirou pouco do café."},
+  {q:"Café amargo e áspero na língua. O que ajustar primeiro?",a:["Moer mais grosso","Moer mais fino","Aumentar a temperatura","Aumentar o tempo"],c:0,e:"Superextração: diminua a extração, começando pela moagem."},
+  {q:"O café está equilibrado, mas ralo e aguado. O que fazer?",a:["Aumentar a dose de café","Moer bem grosso","Usar água fria","Diminuir a dose"],c:0,e:"Falta força: mais café para a mesma água, como de 1:16 para 1:15."},
+  {q:"Ao ajustar uma receita, quantas variáveis mudar de cada vez?",a:["Todas","Uma","Duas, sempre","Nenhuma"],c:1,e:"Uma por vez, para saber o que fez a diferença."}
+]},
+{ id:"m7", n:"7", title:"Bebidas de cafeteria sem máquina", desc:"Leite cremoso, clássicos, cold brew e geladas.", lessons:[
+  { id:"7-1", title:"Espuma de leite sem vaporizador", min:9, video:"",
+    goal:"Fazer leite cremoso em casa com o que você tem.",
+    html:`<p>O ponto do leite é entre <b>55 e 65 °C</b>: quente, mas dá para segurar a jarra na mão. Acima disso, o leite perde a doçura e a espuma desmancha. E nunca passe de 75 °C: as proteínas do leite se rompem.</p>
+<p>Leite integral faz a espuma mais fácil e cremosa. Bebidas vegetais funcionam melhor nas versões "barista".</p>
+<h3>Três jeitos</h3>
+<ol><li><b>Prensa francesa:</b> leite quente até 1/3 da prensa, bombeie o êmbolo 15 a 20 vezes. Bata a jarra na mesa e gire para sumir com as bolhas grandes.</li><li><b>Mixer de leite:</b> ponta logo abaixo da superfície por 20 a 30 s.</li><li><b>Pote com tampa:</b> leite frio até a metade, agite por 30 s, tire a tampa e aqueça 30 s no micro-ondas.</li></ol>`,
+    err:"Ferver o leite. Ele perde a doçura e não segura espuma.",
+    task:"Teste os três jeitos e veja qual dá a espuma mais fina." },
+  { id:"7-2", title:"Clássicos com leite", min:9, video:"",
+    goal:"Montar cappuccino, latte, mocha e macchiato em casa.",
+    html:`<p>A base é o concentrado de Aeropress (18 g de café para 90 g de água) ou cerca de 50 ml de café de moka.</p>
+<div class="tscroll"><table class="t"><thead><tr><th>Bebida</th><th>Montagem</th><th>Xícara</th></tr></thead><tbody>
+<tr><td>Macchiato</td><td>Café + 1 colher de espuma</td><td>Pequena, 80 ml</td></tr>
+<tr><td>Cappuccino</td><td>1/3 café, 1/3 leite, 1/3 espuma</td><td>150 a 180 ml</td></tr>
+<tr><td>Latte</td><td>Café + bastante leite + pouca espuma</td><td>Copo de 240 ml</td></tr>
+<tr><td>Mocha</td><td>Chocolate derretido no café + leite cremoso</td><td>Copo de 240 ml</td></tr>
+</tbody></table></div>`,
+    tip:"Despeje o leite devagar e de perto da superfície no final: a espuma sobe e forma um círculo branco no centro.",
+    task:"Faça um cappuccino para alguém da sua casa." },
+  { id:"7-3", title:"Cold brew", min:7, video:"",
+    goal:"Preparar cold brew para a semana.",
+    html:`<div class="recipe"><header><b>Receita cold brew</b></header>
+<div class="specs"><div><span>Café</span><b>100 g</b></div><div><span>Água fria</span><b>1 L</b></div><div><span>Moagem</span><b>Grossa</b></div><div><span>Tempo</span><b>12–18 h</b></div></div>
+<ol><li>Misture o café com a água filtrada fria num pote. Mexa bem.</li><li>Tampe e deixe na geladeira de 12 a 18 horas.</li><li>Coe com filtro de papel ou pano.</li><li>Sirva com gelo, puro ou meio a meio com água ou leite.</li></ol></div>
+<p>O cold brew tem pouca acidez, é doce e suave. Guardado fechado na geladeira, dura cerca de 5 dias.</p>`,
+    task:"Deixe um cold brew pronto para a próxima aula." },
+  { id:"7-4", title:"Bebidas geladas da casa", min:10, video:"",
+    goal:"Servir bebidas geladas de cafeteria em casa.",
+    html:`<ul><li><b>Iced latte:</b> copo com gelo, 15 ml de calda de chocolate ou caramelo, 150 ml de leite e o concentrado por cima.</li><li><b>Café tônica:</b> copo com gelo, 120 ml de água tônica e 40 a 50 ml de café concentrado despejado devagar por cima. Uma rodela de laranja deixa ainda melhor.</li><li><b>Orange coffee:</b> copo com gelo, 80 ml de suco de laranja e o concentrado por cima. Finalize com casca de laranja.</li></ul>
+<p>Use cold brew ou o concentrado de Aeropress. Despejar o café por último cria as camadas que ficam lindas na foto.</p>
+<p>E o Espresso Verão? Esse é segredo da casa: prove nos eventos do Bilu Coffee.</p>`,
+    task:"Poste sua bebida gelada marcando @escoladobarista." }
+], quiz:[
+  {q:"Qual a temperatura ideal do leite?",a:["30 a 40 °C","55 a 65 °C","80 a 90 °C","Fervendo"],c:1,e:"Dá para segurar a jarra na mão, e o leite mantém a doçura."},
+  {q:"Qual leite espuma mais fácil para quem está começando?",a:["Leite integral","Leite desnatado","Creme de leite","Leite condensado"],c:0,e:"Proteína e gordura do integral formam espuma cremosa e estável."},
+  {q:"Qual a proporção do cappuccino tradicional?",a:["1/3 café, 1/3 leite, 1/3 espuma","Só leite e espuma","Só café e água","90% espuma"],c:0,e:"Três partes iguais."},
+  {q:"Quanto tempo o cold brew fica em infusão?",a:["4 minutos","1 hora","12 a 18 horas","3 dias"],c:2,e:"Água fria extrai devagar, por isso leva horas."}
+]},
+{ id:"m8", n:"8", title:"Limpeza, cuidados e encerramento", desc:"Equipamento limpo e o seu próximo passo.", lessons:[
+  { id:"8-1", title:"Limpeza e manutenção", min:8, video:"",
+    goal:"Manter os equipamentos limpos para o café não pegar gosto ruim.",
+    html:`<p>O óleo do café que fica no equipamento envelhece e deixa gosto rançoso na próxima xícara.</p>
+<div class="tscroll"><table class="t"><thead><tr><th>Equipamento</th><th>Todo dia</th><th>Toda semana ou mês</th></tr></thead><tbody>
+<tr><td>Moedor</td><td>Pincel nas mós e na saída</td><td>Desmontar e limpar as mós, conforme o manual</td></tr>
+<tr><td>V60, Chemex, Aeropress, prensa</td><td>Enxaguar logo após o uso</td><td>Detergente neutro e esponja macia</td></tr>
+<tr><td>Coador de pano</td><td>Só água, guardar em pote com água na geladeira</td><td>Trocar o pano todo mês</td></tr>
+<tr><td>Moka (alumínio)</td><td>Água quente e escova, secar bem</td><td>Trocar a borracha quando endurecer</td></tr>
+<tr><td>Chaleira</td><td>Esvaziar depois de usar</td><td>Tirar o calcário com água e vinagre, e enxaguar bem</td></tr>
+</tbody></table></div>`,
+    err:"Passar arroz no moedor para limpar. Pode travar as mós e muitos fabricantes não recomendam.",
+    task:"Faça a limpeza semanal de todo o seu kit." },
+  { id:"8-2", title:"Encerramento e próximos passos", min:5, video:"",
+    goal:"Fechar o curso e escolher seu próximo passo no café.",
+    html:`<p>Você saiu do café de sempre para o café com receita: escolhe o grão, regula a moagem, pesa, prepara em 8 métodos e corrige o sabor sozinho.</p>
+<h3>Seu próximo passo</h3>
+<p>Quer tirar espresso, vaporizar leite e fazer arte no leite em máquina profissional? O <b>Curso de Barista para Iniciantes</b> presencial acontece em Santo André, em turmas de até 4 pessoas, com certificado em português ou inglês.</p>
+<p>Fale com o Marcelo: <b>${COURSE.contact.phone}</b> (WhatsApp) ou ${COURSE.contact.email}. Avise que fez o curso online.</p>`,
+    task:"Emita seu certificado e deixe seu depoimento sobre o curso." }
+], quiz:[
+  {q:"Por que limpar o moedor com frequência?",a:["O óleo velho deixa gosto rançoso","Para moer mais fino","Para fazer menos barulho","Não precisa limpar"],c:0,e:"O óleo do café oxida e passa gosto para o café novo."},
+  {q:"Como lavar a moka de alumínio no dia a dia?",a:["Na lava-louças com detergente forte","Com água quente e escova, secando bem","Com palha de aço","De molho em vinagre puro"],c:1,e:"Produtos agressivos atacam o alumínio."},
+  {q:"Para que serve descalcificar a chaleira?",a:["Remover o calcário que altera o sabor","Esfriar a água mais rápido","Só deixar brilhando","Não serve para nada"],c:0,e:"Calcário solta partículas e muda o gosto da água."},
+  {q:"Qual o melhor momento para enxaguar o método?",a:["Logo depois do preparo","No fim da semana","Só quando trocar de café","Nunca"],c:0,e:"Óleo seco é mais difícil de tirar."}
+]},
+{ id:"bonus", n:"B", title:"Bônus: espresso em casa", desc:"Para quem tem ou vai comprar máquina doméstica.", optional:true, lessons:[
+  { id:"b-1", title:"Escolhendo uma máquina doméstica", min:8, video:"",
+    goal:"Saber o que cada tipo de máquina entrega.",
+    html:`<p>Se você ainda não tem máquina, este módulo é para quando tiver. Nada do resto do curso depende dele.</p>
+<div class="tscroll"><table class="t"><thead><tr><th>Tipo</th><th>Prós</th><th>Contras</th></tr></thead><tbody>
+<tr><td>Cápsula</td><td>Prática, sem sujeira</td><td>Pouco controle, custo alto por xícara</td></tr>
+<tr><td>Superautomática</td><td>Mói e extrai sozinha</td><td>Cara, pouco ajuste fino</td></tr>
+<tr><td>Manual com porta-filtro</td><td>Controle total, melhor resultado</td><td>Exige moedor bom e técnica</td></tr>
+</tbody></table></div>`,
+    err:"Comprar a máquina e economizar no moedor. Sem moagem fina e regulável, nenhuma máquina tira um bom espresso.",
+    task:"Se for comprar, pesquise primeiro o moedor e depois a máquina." },
+  { id:"b-2", title:"Extraindo o espresso", min:10, video:"",
+    goal:"Tirar um espresso equilibrado com receita.",
+    html:`<div class="recipe"><header><b>Receita espresso</b></header>
+<div class="specs"><div><span>Café</span><b>18 g</b></div><div><span>Bebida</span><b>36 g</b></div><div><span>Tempo</span><b>25–30 s</b></div><div><span>Proporção</span><b>1:2</b></div></div>
+<ol><li>Ligue a máquina antes, para a água chegar a 88–95 °C e a pressão a 8–10 bar.</li><li>Desencaixe o porta-filtro, tire a borra e limpe com pincel e pano.</li><li>Dose o café moído fino: 8 a 10 g no filtro simples, 16 a 20 g no duplo.</li><li>Distribua e nivele. Compacte com força, cerca de 15 a 20 kg, e gire o tamper para soltar o café das laterais.</li><li>Limpe a borda do filtro e faça um flush no grupo para tirar resíduos.</li><li>Encaixe e extraia na hora, na balança e com cronômetro: 20 a 30 s.</li></ol></div>
+<h3>Canalização</h3>
+<p>Quando a água acha um caminho mais fácil pelo café, ela passa direto por ali: parte do café extrai demais e parte de menos. As causas mais comuns são tamper molhado, bater o tamper no porta-filtro e compactação desnivelada.</p>
+<p>Saiu rápido e azedo? Moa mais fino. Saiu lento e amargo? Moa mais grosso. É o mesmo raciocínio do Módulo 6.</p>`,
+    task:"Tire 3 espressos ajustando só a moagem e anote o tempo de cada um." },
+  { id:"b-3", title:"Vaporização com bico doméstico", min:10, video:"",
+    goal:"Fazer microespuma no vaporizador da máquina.",
+    html:`<ol><li>Use leite gelado, rico em proteína e gordura. Encha a jarra (pitcher) até a metade.</li><li>Abra o vapor com o bico vazio para tirar a água acumulada, até sair só vapor.</li><li>Divida a jarra mentalmente em 4 partes e posicione o bico em uma delas, com a ponta na superfície do leite. Abra o vapor na potência máxima.</li><li><b>Aeração:</b> você ouve um chiado de papel rasgando. Por volta de 36 °C, temperatura do corpo, o leite dobra de volume e cobre a saída de vapor.</li><li><b>Rodamoinho:</b> incline a jarra para o leite girar até 60 a 65 °C. Nunca passe de 75 °C.</li><li>Feche o vapor, purgue e limpe o bico na hora para o leite não secar. O ponto certo tem aparência de tinta látex: brilhante e lisa.</li></ol>
+<p>Arte no leite se aprende melhor com máquina profissional e correção ao vivo. É assim no curso presencial da Escola do Barista.</p>`,
+    task:"Vaporize leite e tente desenhar um coração no seu cappuccino." }
+], quiz:[
+  {q:"Qual é a receita de referência de espresso deste curso?",a:["18 g de café para 36 g de bebida em 25 a 30 s","18 g para 200 g em 2 minutos","5 g para 36 g em 10 s","30 g para 30 g em 1 minuto"],c:0,e:"Proporção 1:2, em 25 a 30 segundos."},
+  {q:"O que causa canalização no espresso?",a:["Compactação desnivelada ou tamper molhado","Usar leite integral","Café com data de torra recente","Xícara pré-aquecida"],c:0,e:"A água acha um caminho mais fácil e extrai de forma desigual."},
+  {q:"O espresso saiu em 15 s e azedo. O que fazer?",a:["Moer mais fino","Moer mais grosso","Usar menos café","Compactar menos"],c:0,e:"Rápido e azedo indica pouca extração."},
+  {q:"O que comprar primeiro para fazer espresso em casa?",a:["Um bom moedor","A xícara","Uma jarra de leite","Cápsulas"],c:0,e:"Sem moedor adequado, a máquina não rende."}
+]}
+];
+
+const DIAG = [
+  {k:"amargo",b:"Amargo e áspero",s:"Seca a língua, gosto de queimado",cause:"Superextração: a água tirou coisa demais do café.",fix:["Moa mais grosso.","Baixe a temperatura da água em 2 a 3 °C.","Na imersão, diminua o tempo."],m:"Na prensa, pressione aos 4 min e sirva na hora. Na moka, tire do fogo antes de borbulhar."},
+  {k:"azedo",b:"Azedo ou salgado",s:"Sem doçura, ácido demais",cause:"Subextração: a água tirou pouco do café.",fix:["Moa mais fino.","Use água mais quente, entre 93 e 96 °C.","Faça o bloom com todo o café molhado."],m:"No coado, confira se o tempo total não está curto demais."},
+  {k:"ralo",b:"Ralo, aguado",s:"Gosto equilibrado, mas fraco",cause:"Pouco café para a quantidade de água.",fix:["Aumente a dose: por exemplo, de 1:17 para 1:15.","Mantenha moagem e temperatura iguais."],m:"Use a calculadora para refazer a receita com a nova proporção."},
+  {k:"forte",b:"Pesado demais",s:"Intenso, cansa ao beber",cause:"Muito café para a quantidade de água.",fix:["Diminua a dose: por exemplo, de 1:14 para 1:16.","Ou acrescente um pouco de água quente na xícara."],m:"Na moka e na Aeropress concentrada, isso é normal: use como base para leite."},
+  {k:"vazio",b:"Sem graça, papelão",s:"Sem aroma, sem doçura",cause:"Café velho, mal guardado ou moído com antecedência.",fix:["Confira a data de torra.","Moa só na hora.","Escalde bem o filtro de papel."],m:"Teste um café com torra recente para comparar."},
+  {k:"lento",b:"Demorou demais",s:"O coado não termina",cause:"Moagem fina demais ou excesso de pó fino.",fix:["Moa mais grosso.","Despeje no centro, sem lavar as laterais do filtro."],m:"Na Chemex, confira se o lado de 3 dobras está no bico."},
+  {k:"rapido",b:"Terminou rápido demais",s:"A água passou direto",cause:"Moagem grossa demais.",fix:["Moa mais fino.","Despeje mais devagar, em mais etapas."],m:"Na V60, mire em 2:30 a 3:00 de tempo total."}
+];
+
+const GLOSS = [
+  ["Agtron","Escala que mede a cor da torra. Quanto maior o número, mais clara a torra."],
+  ["Bebida mole","Na classificação brasileira, café doce, suave e agradável."],
+  ["Bloom","Pré-infusão. Primeira água sobre o café, para liberar o gás carbônico antes da extração."],
+  ["Blend","Mistura de cafés de origens diferentes."],
+  ["Canalização","Quando a água passa por um caminho preferencial no café e extrai de forma desigual."],
+  ["Canéfora","Espécie de café que inclui robusta e conilon. Mais cafeína e corpo."],
+  ["Corpo","Sensação de peso e textura do café na boca."],
+  ["Crema","Espuma dourada sobre o espresso, formada pela pressão."],
+  ["Data de torra","Dia em que o café foi torrado. Mostra o frescor real."],
+  ["Dose","Quantidade de café, em gramas."],
+  ["Drenagem","Fase final do coado, quando a água termina de passar pelo café."],
+  ["Extração","Quanto da parte solúvel do café passa para a água."],
+  ["Granulometria","Tamanho das partículas do café moído."],
+  ["Imersão","Método em que o café fica de molho na água, como a prensa."],
+  ["Maillard","Reação entre açúcares e aminoácidos que cria cor, aroma e sabor na torra."],
+  ["Microespuma","Leite vaporizado com bolhas tão pequenas que fica brilhante e liso."],
+  ["Mucilagem","Camada açucarada entre a polpa e o pergaminho do fruto."],
+  ["Moca","Grão único e arredondado, que nasce sozinho no fruto. Cerca de 5% da produção."],
+  ["Mós","Peças do moedor que cortam o grão. Podem ser cônicas ou planas."],
+  ["Pergaminho","Casca fina que envolve o grão dentro do fruto."],
+  ["Percolação","Método em que a água passa pelo café, como na V60."],
+  ["Proporção","Relação entre café e água. 1:15 é 1 g de café para 15 g de água."],
+  ["Processo","Como o fruto vira grão seco: natural, cereja descascado ou lavado."],
+  ["SCA","Specialty Coffee Association, associação internacional de cafés especiais."],
+  ["Subextração","Extração de menos. O café fica azedo e sem doçura."],
+  ["Superextração","Extração demais. O café fica amargo e áspero."],
+  ["Tamper","Compactador usado para prensar o café no porta-filtro do espresso."],
+  ["TDS","Sólidos dissolvidos totais: mede a força do café."],
+  ["Terroir","Conjunto de solo, clima, altitude e manejo que dá identidade ao café de uma região."],
+  ["Torra","Processo que transforma o grão verde em café aromático."],
+  ["Variedade","Tipo de planta dentro da espécie, como Bourbon e Catuaí."]
+];
+
+/* ============================================================
+   ESTADO E UTILIDADES
+   ============================================================ */
+const KEY = "edb-barista-em-casa-v1";
+let S = { done:{}, quiz:{}, name:"", lang:"pt", ans:{} };
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+const $ = (s,el=document)=>el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ALL = []; MODULES.forEach(m=>m.lessons.forEach(l=>ALL.push({m,l})));
+const REQ = MODULES.filter(m=>!m.optional);
+const REQ_LESSONS = ALL.filter(x=>!x.m.optional);
+const fmt = s => { s=Math.max(0,Math.round(s)); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); };
+const totalMin = ALL.reduce((a,x)=>a+x.l.min,0);
+
+function quizPassed(m){ const q=S.quiz[m.id]; return q && q.score/q.total >= .75; }
+function progress(){
+  const units = REQ_LESSONS.length + REQ.length;
+  const got = REQ_LESSONS.filter(x=>S.done[x.l.id]).length + REQ.filter(quizPassed).length;
+  return Math.round(got/units*100);
+}
+function eligible(){ return REQ_LESSONS.every(x=>S.done[x.l.id]) && REQ.every(quizPassed); }
+function nextLesson(){ const x = ALL.find(x=>!S.done[x.l.id]); return x ? x : ALL[0]; }
+
+/* ============================================================
+   NAVEGAÇÃO LATERAL
+   ============================================================ */
+let openMods = new Set(["m1"]);
+function renderSide(cur){
+  const side = $("#side");
+  let h = `<h2>Conteúdo · ${ALL.length} aulas · ${Math.round(totalMin/60*10)/10} h</h2>`;
+  MODULES.forEach(m=>{
+    const done = m.lessons.filter(l=>S.done[l.id]).length;
+    const isOpen = openMods.has(m.id);
+    h += `<div class="mod" data-open="${isOpen}"><button aria-expanded="${isOpen}" data-mod="${m.id}">
+      <span class="num">${m.n}</span><span><span class="mt">${esc(m.title)}</span><br><span class="mc">${done}/${m.lessons.length} aulas${quizPassed(m)?" · teste ok":""}</span></span>
+      ${m.optional?'<span class="opt-tag">opcional</span>':'<span></span>'}</button><ul>`;
+    m.lessons.forEach(l=>{
+      h += `<li><a href="#aula-${l.id}" ${cur==="aula-"+l.id?'aria-current="page"':""}><span class="chk ${S.done[l.id]?"on":""}"></span><span>${l.id.replace("-",".").toUpperCase()} ${esc(l.title)}</span><span class="dur">${l.min} min</span></a></li>`;
+    });
+    h += `<li><a href="#teste-${m.id}" ${cur==="teste-"+m.id?'aria-current="page"':""}><span class="chk quiz ${quizPassed(m)?"on":""}"></span><span>Teste do módulo</span><span class="dur">${m.quiz.length} perg.</span></a></li></ul></div>`;
+  });
+  side.innerHTML = h;
+  side.querySelectorAll("[data-mod]").forEach(b=>b.onclick=()=>{
+    const id=b.dataset.mod; openMods.has(id)?openMods.delete(id):openMods.add(id); renderSide(cur);
+  });
+  const p = progress();
+  $("#ringArc").setAttribute("stroke-dasharray", p+" 100");
+  $("#ringTxt").textContent = p+"%";
+}
+
+/* ============================================================
+   TELAS
+   ============================================================ */
+function viewHome(){
+  const nx = nextLesson(); const started = Object.keys(S.done).length>0;
+  const r = R.v60;
+  return `<section class="hero">
+    <div>
+      <div class="eyebrow">Escola do Barista · Curso online</div>
+      <h1>Barista<br><em>em Casa</em></h1>
+      <p class="lede">Do café de sempre ao café de cafeteria, na sua cozinha. Métodos manuais, receita na balança e o seu paladar como guia. Sem precisar de máquina de espresso.</p>
+      <div class="row" style="margin-top:22px">
+        <a class="btn" href="#aula-${nx.l.id}">${started?"Continuar":"Começar"}: aula ${nx.l.id.replace("-",".").toUpperCase()}</a>
+        <a class="btn ghost" href="#ferramentas">Abrir ferramentas</a>
+      </div>
+    </div>
+    <div class="ticket" aria-label="Receita de exemplo">
+      <h3>Receita da casa</h3>
+      <div class="sub">Hario V60 · 1 xícara</div>
+      <div class="ln"><span>Café</span><b>${r.dose} g</b></div>
+      <div class="ln"><span>Água</span><b>${r.water} g</b></div>
+      <div class="ln"><span>Proporção</span><b>1:${(r.water/r.dose).toFixed(1).replace(".",",")}</b></div>
+      <div class="ln"><span>Moagem</span><b>${r.grind}</b></div>
+      <div class="ln"><span>Temperatura</span><b>${r.temp}</b></div>
+      <div class="ln"><span>Tempo total</span><b>${r.time}</b></div>
+      <div class="foot">Bilu Coffee · Santo André SP<br><a href="#ferramentas">Preparar com o timer guiado</a></div>
+    </div>
+  </section>
+  <div class="stats">
+    <div><b>${ALL.length}</b><span>aulas curtas</span></div>
+    <div><b>${Math.round(totalMin/60*10)/10}h</b><span>de conteúdo</span></div>
+    <div><b>8</b><span>métodos de preparo</span></div>
+    <div><b>PT · EN</b><span>certificado</span></div>
+  </div>
+  <div class="section-h"><h2>Módulos</h2><span class="mono" style="color:var(--muted)">Seu progresso: ${progress()}%</span></div>
+  <div class="grid-mods">
+    ${MODULES.map(m=>{const d=m.lessons.filter(l=>S.done[l.id]).length;return `<a class="card" href="#aula-${m.lessons[0].id}"><span class="num">${m.n}</span><h3>${esc(m.title)}</h3><p>${esc(m.desc)}</p><p class="mono" style="font-size:13px">${m.lessons.length} aulas · ${m.lessons.reduce((a,l)=>a+l.min,0)} min${m.optional?" · opcional":""}</p><div class="bar"><i style="width:${d/m.lessons.length*100}%"></i></div></a>`}).join("")}
+  </div>
+  <div class="section-h"><h2>Como funciona</h2></div>
+  <div class="how">
+    <div><b>Assista</b><p>Aulas de 5 a 10 minutos, com resumo escrito embaixo de cada vídeo.</p></div>
+    <div><b>Pratique</b><p>Cada aula tem uma tarefa. Use o timer guiado e a calculadora de receita.</p></div>
+    <div><b>Teste</b><p>Um teste por módulo. Acerte 75% para avançar com segurança.</p></div>
+    <div><b>Certifique</b><p>Certificado em português ou inglês ao concluir os 8 módulos.</p></div>
+  </div>
+  <section class="instr">
+    <img src="data:image/png;base64,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" alt="">
+    <div><div class="eyebrow" style="color:var(--paper);opacity:.7">Seu instrutor</div>
+    <h3>${COURSE.instructor}</h3>
+    <p>16 anos como barista e instrutor, à frente do Bilu Coffee e da Escola do Barista em Santo André. Atende feiras, congressos e eventos corporativos com estações de café especial.</p>
+    <a class="btn" href="#aula-1-1">Assistir a primeira aula</a></div>
+  </section>`;
+}
+
+function recipeBox(key){
+  const r = R[key];
+  return `<div class="recipe"><header><b>Receita ${esc(r.name)}</b><a href="#ferramentas" data-timer="${key}">Abrir no timer</a></header>
+  <div class="specs"><div><span>Café</span><b>${r.dose} g</b></div><div><span>Água</span><b>${r.water} g</b></div><div><span>Moagem</span><b>${r.grind}</b></div><div><span>Tempo</span><b>${r.time}</b></div></div>
+  <ol>${r.steps.map(s=>`<li><span class="t">${fmt(s.t)}</span> · <b>${s.b}</b>${s.to?` até ${s.to} g`:""}. ${s.n}</li>`).join("")}</ol></div>
+  <p class="mono" style="font-size:13px;color:var(--muted)">Temperatura: ${r.temp}. Proporção 1:${(r.water/r.dose).toFixed(1).replace(".",",")}.</p>`;
+}
+function diagTable(){
+  return `<div class="tscroll"><table class="t"><thead><tr><th>Sintoma</th><th>Causa provável</th><th>Primeiro ajuste</th></tr></thead><tbody>${DIAG.slice(0,4).map(d=>`<tr><td><b>${d.b}</b></td><td>${d.cause}</td><td>${d.fix[0]}</td></tr>`).join("")}</tbody></table></div>`;
+}
+
+function viewLesson(id){
+  const i = ALL.findIndex(x=>x.l.id===id); if (i<0) return viewHome();
+  const {m,l} = ALL[i]; const prev = ALL[i-1], next = ALL[i+1];
+  openMods.add(m.id);
+  const lastOfMod = !next || next.m.id!==m.id;
+  const code = l.id.replace("-",".").toUpperCase();
+  const vid = l.video ? `<a href="${esc(l.video)}" target="_blank" rel="noopener">Assistir ao vídeo</a>` : `<span class="vs">O vídeo desta aula entra aqui. Enquanto isso, siga o resumo e a receita abaixo.</span>`;
+  return `<article class="wrap lesson">
+    <div class="crumb">Módulo ${m.n} · ${esc(m.title)}</div>
+    <h1>${code} · ${esc(l.title)}</h1>
+    <div class="meta"><span>${l.min} min</span><span>Aula ${i+1} de ${ALL.length}</span>${S.done[l.id]?'<span class="done-badge">Concluída</span>':""}</div>
+    <div class="video"><div class="play"></div><div class="vt">Aula ${code} · ${l.min} min</div>${vid}</div>
+    <div class="goal"><b>Objetivo da aula</b>${esc(l.goal)}</div>
+    <div class="prose">${l.html}${l.recipe?recipeBox(l.recipe):""}${l.diag?diagTable():""}
+    ${l.err?`<div class="callout err"><span class="ic">Erro comum</span><p>${l.err}</p></div>`:""}
+    ${l.tip?`<div class="callout tip"><span class="ic">Dica</span><p>${l.tip}</p></div>`:""}
+    </div>
+    <div class="task"><label for="done-${l.id}"><input type="checkbox" id="done-${l.id}" ${S.done[l.id]?"checked":""}><span><b>Tarefa prática</b>${esc(l.task)}<br><span style="color:var(--muted);font-size:15px">Marque quando concluir a aula.</span></span></label></div>
+    <div class="pager">
+      ${prev?`<a href="#aula-${prev.l.id}"><span>Anterior</span><b>${esc(prev.l.title)}</b></a>`:"<span></span>"}
+      ${lastOfMod?`<a class="next" href="#teste-${m.id}"><span>Próximo</span><b>Teste do módulo ${m.n}</b></a>`:`<a class="next" href="#aula-${next.l.id}"><span>Próxima</span><b>${esc(next.l.title)}</b></a>`}
+    </div>
+  </article>`;
+}
+function bindLesson(id){
+  const cb = $("#done-"+id); if(!cb) return;
+  cb.onchange = ()=>{ if(cb.checked) S.done[id]=true; else delete S.done[id]; save(); renderSide("aula-"+id);
+    const badge=$(".meta"); if(badge){ const b=badge.querySelector(".done-badge"); if(cb.checked&&!b) badge.insertAdjacentHTML("beforeend",'<span class="done-badge">Concluída</span>'); if(!cb.checked&&b) b.remove(); } };
+}
+
+function viewQuiz(mid){
+  const m = MODULES.find(x=>x.id===mid); if(!m) return viewHome(); openMods.add(m.id);
+  const prev = S.quiz[m.id];
+  const idx = MODULES.indexOf(m); const nm = MODULES[idx+1];
+  return `<article class="wrap">
+    <div class="crumb">Módulo ${m.n} · ${esc(m.title)}</div>
+    <h1 style="font-size:clamp(30px,4vw,42px);margin:4px 0 10px">Teste do módulo ${m.n}</h1>
+    <p class="lede" style="font-size:18px">${m.quiz.length} perguntas. Acerte 75% para concluir o módulo${m.optional?" (este é opcional)":""}. Pode refazer quantas vezes quiser.</p>
+    ${prev?`<p class="mono" style="color:var(--muted)">Melhor resultado até agora: ${prev.score}/${prev.total}</p>`:""}
+    <form id="quiz">${m.quiz.map((q,qi)=>`<fieldset class="q" style="border:1px solid var(--line)"><legend class="sr" style="position:absolute;left:-9999px">${esc(q.q)}</legend><h3><span class="n">${qi+1}.</span>${esc(q.q)}</h3>${q.a.map((a,ai)=>`<label for="q${qi}a${ai}"><input type="radio" name="q${qi}" id="q${qi}a${ai}" value="${ai}"><span>${esc(a)}</span></label>`).join("")}<p class="exp">${esc(q.e)}</p></fieldset>`).join("")}
+    <div class="row"><button class="btn" type="submit">Corrigir teste</button><button class="btn ghost" type="button" id="qreset">Refazer</button></div></form>
+    <div id="qres"></div>
+    <div class="pager">${nm?`<a class="next" href="#aula-${nm.lessons[0].id}"><span>Próximo módulo</span><b>${esc(nm.title)}</b></a>`:`<a class="next" href="#certificado"><span>Fim do curso</span><b>Emitir certificado</b></a>`}</div>
+  </article>`;
+}
+function bindQuiz(mid){
+  const m = MODULES.find(x=>x.id===mid); const f=$("#quiz"); if(!f) return;
+  f.onsubmit = e=>{ e.preventDefault();
+    let score=0, missing=0;
+    m.quiz.forEach((q,qi)=>{ const sel=f.querySelector(`input[name=q${qi}]:checked`); const fs=f.querySelectorAll("fieldset")[qi];
+      fs.classList.add("checked"); fs.querySelectorAll("label").forEach((lb,ai)=>{ lb.classList.remove("right","wrong"); if(ai===q.c) lb.classList.add("right"); if(sel&&+sel.value===ai&&ai!==q.c) lb.classList.add("wrong"); });
+      if(!sel) missing++; else if(+sel.value===q.c) score++; });
+    const pass = score/m.quiz.length>=.75;
+    const best = S.quiz[m.id]; if(!best || score>best.score) S.quiz[m.id]={score,total:m.quiz.length}; save(); renderSide("teste-"+mid);
+    $("#qres").innerHTML = `<div class="score ${pass?"pass":"fail"}" role="status"><b>${score} de ${m.quiz.length} acertos.</b> ${pass?"Módulo concluído. Siga para o próximo.":"Revise as aulas e tente de novo: você precisa de "+Math.ceil(m.quiz.length*.75)+" acertos."}${missing?` Faltou responder ${missing}.`:""}</div>`;
+    $("#qres").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
+  };
+  $("#qreset").onclick=()=>{ f.reset(); f.querySelectorAll("fieldset").forEach(fs=>{fs.classList.remove("checked");fs.querySelectorAll("label").forEach(l=>l.classList.remove("right","wrong"))}); $("#qres").innerHTML=""; };
+}
+
+/* ---------- Ferramentas ---------- */
+let tool = "calc", method = "v60", calc = { dose:15, ratio:R.v60.water/R.v60.dose };
+function viewTools(){
+  return `<div class="wrap" style="max-width:980px">
+    <div class="eyebrow">Ferramentas do barista</div>
+    <h1 style="font-size:clamp(30px,4vw,42px);margin:6px 0 4px">Sua bancada digital</h1>
+    <p class="lede" style="font-size:18px">Use enquanto prepara: monte a receita, siga o timer e corrija o sabor.</p>
+    <div class="tools-tabs" role="tablist">
+      ${[["calc","Calculadora de receita"],["timer","Timer guiado"],["diag","Diagnóstico da xícara"],["gloss","Glossário"]].map(([k,t])=>`<button role="tab" aria-selected="${tool===k}" data-tool="${k}">${t}</button>`).join("")}
+    </div>
+    <div id="toolBody"></div></div>`;
+}
+function methodChips(){
+  return `<div class="chips">${Object.entries(R).map(([k,r])=>`<button class="chip" aria-pressed="${method===k}" data-method="${k}">${r.name}</button>`).join("")}</div>`;
+}
+function renderTool(){
+  const b = $("#toolBody"); if(!b) return;
+  document.querySelectorAll("[data-tool]").forEach(x=>x.setAttribute("aria-selected", x.dataset.tool===tool));
+  stopTimer(false);
+  if(tool==="calc"){
+    const r=R[method];
+    b.innerHTML = methodChips()+`<div class="calc">
+      <div class="panel">
+        <div class="field"><label for="dose">Café (g)</label><div class="stepper"><button type="button" data-d="-1" aria-label="Menos 1 grama">−</button><input id="dose" type="number" min="5" max="120" step="1" value="${calc.dose}"><button type="button" data-d="1" aria-label="Mais 1 grama">+</button></div></div>
+        <div class="field"><label for="ratio">Proporção: <span id="rlab"></span></label><input id="ratio" type="range" min="12" max="18" step="0.5" value="${calc.ratio}"><div class="row mono" style="justify-content:space-between;font-size:13px;color:var(--muted)"><span>1:12 forte</span><span>1:18 suave</span></div></div>
+        <div class="field"><label for="cups">Ou escolha pelas xícaras (150 ml)</label><div class="chips" id="cups" style="margin:0">${[1,2,3,4].map(n=>`<button class="chip" type="button" data-cups="${n}">${n}</button>`).join("")}</div></div>
+      </div>
+      <div class="panel">
+        <div class="field"><label>Água total</label><div class="big" id="oWater"></div></div>
+        <div class="out">
+          <div><span>Bloom</span><b id="oBloom"></b></div>
+          <div><span>Café na xícara (aprox.)</span><b id="oBev"></b></div>
+          <div><span>Moagem</span><b style="font-size:18px">${r.grind}</b></div>
+          <div><span>Temperatura</span><b style="font-size:18px">${r.temp}</b></div>
+        </div>
+        <p style="font-size:15px;color:var(--muted);margin:16px 0 12px">O pó segura cerca de 2 g de água para cada 1 g de café, por isso sai menos bebida do que a água que você coloca.</p>
+        <a class="btn" href="#ferramentas" id="toTimer">Preparar no timer</a>
+      </div></div>`;
+    const upd=()=>{ const w=Math.round(calc.dose*calc.ratio); $("#rlab").textContent="1:"+String(calc.ratio).replace(".",","); $("#oWater").innerHTML=w+" <small>g</small>"; $("#oBloom").textContent=Math.round(calc.dose*2.5)+" g"; $("#oBev").textContent=Math.max(0,w-calc.dose*2)+" ml"; };
+    $("#dose").oninput=e=>{ calc.dose=Math.min(120,Math.max(5,+e.target.value||5)); upd(); };
+    b.querySelectorAll("[data-d]").forEach(x=>x.onclick=()=>{ calc.dose=Math.min(120,Math.max(5,calc.dose+ +x.dataset.d)); $("#dose").value=calc.dose; upd(); });
+    $("#ratio").oninput=e=>{ calc.ratio=+e.target.value; upd(); };
+    b.querySelectorAll("[data-cups]").forEach(x=>x.onclick=()=>{ const bev=150*+x.dataset.cups; calc.dose=Math.round(bev/(calc.ratio-2)); $("#dose").value=calc.dose; upd(); });
+    $("#toTimer").onclick=e=>{ e.preventDefault(); tool="timer"; renderTool(); };
+    upd();
+  }
+  if(tool==="timer"){
+    b.innerHTML = methodChips()+`<div class="timer"><div class="panel">
+      <div class="mono" style="color:var(--muted);font-size:14px" id="tInfo"></div>
+      <div class="clock" id="clock" aria-live="off">0:00</div>
+      <div class="now" id="now" aria-live="polite"></div>
+      <div class="row"><button class="btn" id="tStart">Iniciar</button><button class="btn ghost" id="tReset">Zerar</button></div>
+      <label class="row" style="margin-top:14px;font-size:15px;gap:8px" for="beep"><input type="checkbox" id="beep" checked style="accent-color:var(--cherry)"> Aviso sonoro a cada etapa</label>
+    </div><div class="panel"><h3 style="font-size:20px;margin-bottom:8px">Etapas</h3><ul class="steps-list" id="stepsList"></ul></div></div>`;
+    setupTimer();
+  }
+  if(tool==="diag"){
+    b.innerHTML = `<p style="margin-top:0">Como está o seu café? Escolha o que mais parece com a sua xícara.</p><div class="diag-btns">${DIAG.map(d=>`<button aria-pressed="false" data-dg="${d.k}"><b>${d.b}</b><span>${d.s}</span></button>`).join("")}</div><div class="panel diag-out" id="dgOut"><p style="margin:0;color:var(--muted)">Escolha um sintoma acima para ver a causa e o ajuste.</p></div>`;
+    b.querySelectorAll("[data-dg]").forEach(x=>x.onclick=()=>{ b.querySelectorAll("[data-dg]").forEach(y=>y.setAttribute("aria-pressed",y===x)); const d=DIAG.find(z=>z.k===x.dataset.dg);
+      $("#dgOut").innerHTML=`<div class="eyebrow">Diagnóstico</div><h3>${d.cause}</h3><p><b>O que fazer, nesta ordem:</b></p><ol>${d.fix.map(f=>`<li>${f}</li>`).join("")}</ol><div class="callout tip" style="margin-bottom:0"><span class="ic">Dica</span><p>${d.m} Mude uma coisa por vez e prove de novo.</p></div>`; });
+  }
+  if(tool==="gloss"){
+    b.innerHTML = `<label for="gq" style="position:absolute;left:-9999px">Buscar termo</label><input class="search" id="gq" placeholder="Buscar termo, por exemplo: bloom" autocomplete="off"><dl class="gl" id="gl"></dl>`;
+    const draw=q=>{ q=(q||"").toLowerCase(); $("#gl").innerHTML=GLOSS.filter(g=>!q||g[0].toLowerCase().includes(q)||g[1].toLowerCase().includes(q)).map(g=>`<div><dt>${g[0]}</dt><dd>${g[1]}</dd></div>`).join("")||"<p>Nenhum termo encontrado.</p>"; };
+    $("#gq").oninput=e=>draw(e.target.value); draw("");
+  }
+  b.querySelectorAll("[data-method]").forEach(x=>x.onclick=()=>{ method=x.dataset.method; const r=R[method]; calc.dose=r.dose; calc.ratio=Math.round(r.water/r.dose*2)/2; renderTool(); });
+}
+
+let T = { run:false, t0:0, el:0, h:null, lastStep:-1, ctx:null };
+function stepsFor(){ const r=R[method]; const k=Math.round(calc.dose*calc.ratio)/r.water; return r.steps.map(s=>Object.assign({},s,{to:s.to?Math.round(s.to*k):null})); }
+function setupTimer(){
+  const r=R[method]; const st=stepsFor();
+  $("#tInfo").textContent = `${r.name} · ${calc.dose} g de café · ${Math.round(calc.dose*calc.ratio)} g de água · ${r.grind} · ${r.temp}`;
+  $("#stepsList").innerHTML = st.map((s,i)=>`<li data-i="${i}"><span class="t">${fmt(s.t)}</span><span><b>${s.b}</b><br><span style="font-size:15px;color:var(--muted)">${s.n}</span></span><span class="g">${s.to?s.to+" g":""}</span></li>`).join("");
+  $("#tStart").onclick=()=>{ if(T.run) stopTimer(true); else startTimer(); };
+  $("#tReset").onclick=()=>{ stopTimer(false); T.el=0; T.lastStep=-1; tick(); };
+  T.el=0; T.lastStep=-1; tick();
+}
+function beep(){ if(!$("#beep")||!$("#beep").checked) return; try{ T.ctx=T.ctx||new (window.AudioContext||window.webkitAudioContext)(); const o=T.ctx.createOscillator(), g=T.ctx.createGain(); o.frequency.value=880; g.gain.value=.12; o.connect(g); g.connect(T.ctx.destination); o.start(); o.stop(T.ctx.currentTime+.18);}catch(e){} }
+function startTimer(){ try{ T.ctx=T.ctx||new (window.AudioContext||window.webkitAudioContext)(); T.ctx.resume&&T.ctx.resume(); }catch(e){}
+  T.run=true; T.t0=performance.now()-T.el*1000; $("#tStart").textContent="Pausar"; T.h=setInterval(()=>{ T.el=(performance.now()-T.t0)/1000; tick(); },200); }
+function stopTimer(keep){ if(T.h) clearInterval(T.h); T.h=null; T.run=false; const b=$("#tStart"); if(b) b.textContent = keep&&T.el>0?"Continuar":"Iniciar"; }
+function tick(){
+  const st=stepsFor(); const c=$("#clock"); if(!c) return;
+  c.textContent=fmt(T.el);
+  let cur=0; st.forEach((s,i)=>{ if(T.el>=s.t) cur=i; });
+  if(cur!==T.lastStep){ if(T.lastStep>=0) beep(); T.lastStep=cur;
+    const s=st[cur], nx=st[cur+1];
+    $("#now").innerHTML=`<span>${s.end?"Finalizado":"Agora"}</span><b>${s.b}${s.to?` até ${s.to} g`:""}</b><p>${s.n}</p>${nx?`<p class="mono" style="font-size:14px;margin-top:8px;color:var(--muted)">Próximo: ${nx.b} em ${fmt(nx.t)}</p>`:""}`;
+    document.querySelectorAll("#stepsList li").forEach((li,i)=>{ li.classList.toggle("past",i<cur); li.classList.toggle("cur",i===cur); });
+    if(s.end && T.run) stopTimer(false);
+  }
+}
+
+/* ---------- Certificado ---------- */
+const LOGO = new Image(); LOGO.src = "data:image/png;base64,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";
+function viewCert(){
+  const ok = eligible();
+  return `<div class="wrap">
+    <div class="eyebrow">Certificado</div>
+    <h1 style="font-size:clamp(30px,4vw,42px);margin:6px 0 10px">${ok?"Parabéns, você concluiu o curso":"Seu certificado"}</h1>
+    <p class="lede" style="font-size:18px">${ok?"Digite seu nome como quer que apareça e escolha o idioma.":"Conclua todas as aulas e os testes dos módulos 1 a 8 para emitir o certificado. O bônus de espresso é opcional."}</p>
+    <ul class="req">${REQ.map(m=>{const d=m.lessons.every(l=>S.done[l.id]);const q=quizPassed(m);return `<li><span class="chk ${d&&q?"on":""}"></span><span>Módulo ${m.n} · ${esc(m.title)}</span><span class="mono" style="margin-left:auto;font-size:13px;color:var(--muted)">${m.lessons.filter(l=>S.done[l.id]).length}/${m.lessons.length} aulas · teste ${q?"ok":"pendente"}</span></li>`}).join("")}</ul>
+    <div class="row" style="margin-bottom:6px">
+      <label for="certName" style="position:absolute;left:-9999px">Nome no certificado</label>
+      <input class="namein" id="certName" placeholder="Seu nome completo" value="${esc(S.name)}" ${ok?"":"disabled"}>
+      <div class="lang" role="group" aria-label="Idioma do certificado"><button data-lang="pt" aria-pressed="${S.lang==="pt"}">Português</button><button data-lang="en" aria-pressed="${S.lang==="en"}">English</button></div>
+      <button class="btn" id="certGo" ${ok?"":"disabled"}>Gerar certificado</button>
+      ${ok?"":`<button class="btn ghost" id="certSample">Ver modelo</button>`}
+    </div>
+    <p style="font-size:15px;color:var(--muted)">Para salvar, toque e segure na imagem (celular) ou clique com o botão direito e escolha salvar imagem (computador).</p>
+    <div id="certOut"></div></div>`;
+}
+function drawCert(name, lang, sample){
+  const W=1600,H=1130,c=document.createElement("canvas"); c.width=W; c.height=H; const x=c.getContext("2d");
+  const ink="#16120F", red="#A4282C";
+  x.fillStyle="#FBFAF7"; x.fillRect(0,0,W,H);
+  x.strokeStyle=ink; x.lineWidth=10; x.strokeRect(40,40,W-80,H-80); x.lineWidth=2; x.strokeRect(62,62,W-124,H-124);
+  try{ x.drawImage(LOGO,W/2-90,100,180,180); }catch(e){}
+  const T = lang==="en" ? {h:"CERTIFICATE OF COMPLETION",a:"This certifies that",b:"has successfully completed the online course",c:"Barista at Home",d:`Home brewing for beginners · ${ALL.length} lessons · approx. ${Math.round(totalMin/60)} hours`,e:"Instructor",f:"Date"}
+                         : {h:"CERTIFICADO DE CONCLUSÃO",a:"Certificamos que",b:"concluiu com aproveitamento o curso online",c:"Barista em Casa",d:`Métodos de preparo para iniciantes · ${ALL.length} aulas · cerca de ${Math.round(totalMin/60)} horas`,e:"Instrutor",f:"Data"};
+  x.textAlign="center"; x.fillStyle=red; x.font="700 30px 'Courier Prime', monospace"; x.fillText(T.h,W/2,335);
+  x.fillStyle=ink; x.font="400 34px 'Source Sans 3', sans-serif"; x.fillText(T.a,W/2,420);
+  let fs=86; x.font=`400 ${fs}px 'Alfa Slab One', serif`; while(x.measureText(name).width>W-260 && fs>40){ fs-=4; x.font=`400 ${fs}px 'Alfa Slab One', serif`; }
+  x.fillText(name,W/2,530);
+  x.fillRect(W/2-380,560,760,2);
+  x.font="400 34px 'Source Sans 3', sans-serif"; x.fillText(T.b,W/2,635);
+  x.font="700 62px 'Zilla Slab', serif"; x.fillStyle=red; x.fillText(T.c,W/2,715);
+  x.fillStyle=ink; x.font="400 28px 'Courier Prime', monospace"; x.fillText(T.d,W/2,775);
+  const d=new Date(); const ds = lang==="en"? d.toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"}) : d.toLocaleDateString("pt-BR",{year:"numeric",month:"long",day:"numeric"});
+  x.font="700 38px 'Zilla Slab', serif"; x.fillText(COURSE.instructor,W/2-330,930); x.fillText(ds,W/2+330,930);
+  x.fillRect(W/2-530,880,400,2); x.fillRect(W/2+130,880,400,2);
+  x.font="400 26px 'Courier Prime', monospace"; x.fillStyle="#5E5751"; x.fillText(T.e+" · "+COURSE.school,W/2-330,970); x.fillText(T.f,W/2+330,970);
+  x.font="400 22px 'Courier Prime', monospace"; x.fillText("Bilu Coffee · Escola do Barista · Santo André - SP · escoladobarista.com.br",W/2,1040);
+  if(sample){ x.save(); x.translate(W/2,H/2); x.rotate(-.35); x.fillStyle="rgba(164,40,44,.16)"; x.font="400 220px 'Alfa Slab One', serif"; x.fillText(lang==="en"?"SAMPLE":"MODELO",0,60); x.restore(); }
+  return c.toDataURL("image/png");
+}
+function bindCert(){
+  document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{ S.lang=b.dataset.lang; save(); document.querySelectorAll("[data-lang]").forEach(y=>y.setAttribute("aria-pressed",y===b)); });
+  const out=$("#certOut");
+  const show=(name,sample)=>{ const go=()=>{ out.innerHTML=`<img class="cert-img" alt="Certificado de ${esc(name)}" src="${drawCert(name,S.lang,sample)}">`; }; (document.fonts&&document.fonts.ready?document.fonts.ready.then(go):go()); };
+  const n=$("#certName"); if(n) n.oninput=()=>{ S.name=n.value; save(); };
+  const g=$("#certGo"); if(g) g.onclick=()=>{ const v=(n.value||"").trim(); if(!v){ out.innerHTML=`<p class="score fail">Digite seu nome para gerar o certificado.</p>`; n.focus(); return; } show(v,false); };
+  const s=$("#certSample"); if(s) s.onclick=()=>show("Nome do Aluno",true);
+}
+
+/* ============================================================
+   ROTEAMENTO
+   ============================================================ */
+function route(){
+  const h = (location.hash||"#inicio").slice(1);
+  const main=$("#main"); let html, bind=()=>{}, nav="inicio";
+  if(h.startsWith("aula-")){ const id=h.slice(5); html=viewLesson(id); bind=()=>bindLesson(id); nav=""; }
+  else if(h.startsWith("teste-")){ const id=h.slice(6); html=viewQuiz(id); bind=()=>bindQuiz(id); nav=""; }
+  else if(h==="ferramentas"){ html=viewTools(); nav="ferramentas"; bind=()=>{ document.querySelectorAll("[data-tool]").forEach(b=>b.onclick=()=>{tool=b.dataset.tool;renderTool();}); renderTool(); }; }
+  else if(h==="certificado"){ html=viewCert(); nav="certificado"; bind=bindCert; }
+  else { html=viewHome(); }
+  if(!h.startsWith("ferramentas")) stopTimer(false);
+  main.innerHTML=html; bind();
+  main.querySelectorAll("[data-timer]").forEach(a=>a.addEventListener("click",()=>{ const k=a.dataset.timer; method=k; calc.dose=R[k].dose; calc.ratio=Math.round(R[k].water/R[k].dose*2)/2; tool="timer"; if(location.hash==="#ferramentas") renderTool(); }));
+  document.querySelectorAll("[data-nav]").forEach(a=>a.toggleAttribute("aria-current", a.dataset.nav===nav) || a.dataset.nav===nav && a.setAttribute("aria-current","page"));
+  document.querySelectorAll("[data-nav]").forEach(a=>{ if(a.dataset.nav===nav) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  renderSide(h);
+  document.body.classList.remove("nav-open"); $("#menuBtn").setAttribute("aria-expanded","false");
+  window.scrollTo(0,0);
+}
+$("#menuBtn").onclick=()=>{ const o=document.body.classList.toggle("nav-open"); $("#menuBtn").setAttribute("aria-expanded",o); };
+$("#backdrop").onclick=()=>{ document.body.classList.remove("nav-open"); $("#menuBtn").setAttribute("aria-expanded","false"); };
+window.addEventListener("hashchange",route);
+route();
+</script>
+</body>
+</html>

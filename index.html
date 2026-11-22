@@ -215,6 +215,7 @@ a.mcard:hover{transform:translateY(-3px);border-color:var(--ink)}
 .lesson h1{font-size:clamp(30px,4vw,42px);margin:4px 0 14px}
 .meta{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:14px;color:var(--muted);margin-bottom:22px}
 .video{aspect-ratio:16/9;background:var(--video);border-radius:8px;position:relative;overflow:hidden;margin-bottom:26px;color:#fff}
+.video video{position:absolute;inset:0;width:100%;height:100%;background:#000}
 .video img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
 .video .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px;background:linear-gradient(rgba(0,0,0,.15),rgba(0,0,0,.55))}
 .play{width:78px;height:78px;border-radius:50%;background:rgba(164,40,44,.92);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.4)}
@@ -479,7 +480,7 @@ const MODULES = [
   {q:"Onde o moedor deve ficar na bancada?",a:["Ao lado da xícara de servir","Na área de moagem, separada do preparo","Dentro do armário","Ao lado do fogão aceso"],c:1,e:"Separar as áreas evita pó solto no preparo e na xícara."}
 ]},
 { id:"m2", n:"2", title:"Conhecendo o café", desc:"Espécies, processos, torra e como escolher um café especial.", lessons:[
-  { id:"2-1", title:"Do pé à xícara", min:8, video:"",
+  { id:"2-1", title:"Do pé à xícara", min:8, video:"videos/aula-2-1.mp4",
     goal:"Entender de onde vem o café e o que faz um café ser especial.",
     html:`<h3>Uma lenda e uma muda</h3>
 <p>Tudo começou na Etiópia, com a lenda de Kaldi, um pastor que percebeu que suas cabras ficavam agitadas depois de comer uns frutinhos vermelhos. Os árabes dominaram o plantio e o preparo, e o café chegou à Europa no século XVII.</p>
@@ -1113,7 +1114,8 @@ function viewLesson(id){
     <div class="crumb">Módulo ${m.n} · ${esc(m.title)}</div>
     <h1>${code(l.id)} · ${esc(l.title)}</h1>
     <div class="meta"><span>${l.min} min</span><span>Aula ${i+1} de ${ALL.length}</span>${S.done[l.id]?'<span class="done-badge">Concluída</span>':""}</div>
-    <div class="video"><img src="${IMG(poster)}" alt=""><div class="ov">${l.video?"":`<div class="play"></div>`}<div class="vt">Aula ${code(l.id)} · ${l.min} min</div>${vid}</div></div>
+    ${/\.mp4$/i.test(l.video||"") ? `<div class="video"><video controls playsinline preload="metadata" poster="${IMG(poster)}" src="${esc(l.video)}"></video></div>`
+      : `<div class="video"><img src="${IMG(poster)}" alt=""><div class="ov">${l.video?"":`<div class="play"></div>`}<div class="vt">Aula ${code(l.id)} · ${l.min} min</div>${vid}</div></div>`}
     <div class="goal"><b>Objetivo da aula</b>${esc(l.goal)}</div>
     <div class="prose">${l.recipe?`<span class="method-art">${art(l.recipe)}</span>`:""}${l.html}${gal}${l.recipe?recipeBox(l.recipe):""}${l.diag?diagTable():""}
     ${l.err?`<div class="callout err"><span class="ic">Erro comum</span><p>${l.err}</p></div>`:""}

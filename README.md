@@ -33,6 +33,10 @@ No `index.html`, procure a aula pelo `id` (por exemplo `id:"4-2"`) e cole o link
 { id:"4-2", title:"Hario V60", min:10, video:"https://youtu.be/SEU-VIDEO", ... }
 ```
 
+## Vídeos dentro do site
+
+Vídeos curtos (até ~25 MB) podem ficar na pasta `videos/` e ser ligados à aula com `video:"videos/nome.mp4"`: o player aparece dentro da aula. Para vídeos longos, prefira YouTube (não listado) ou Vimeo e cole o link.
+
 ## Contato
 
 - WhatsApp: (11) 99562-9279

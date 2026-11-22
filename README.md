@@ -8,6 +8,7 @@ Curso online de barista para iniciantes, com foco em métodos manuais para fazer
 - 9 módulos (8 obrigatórios + bônus de espresso) e 30 aulas curtas, com fotos reais da escola
 - Teste ao final de cada módulo (75% para concluir)
 - Ferramentas: calculadora de receita, timer guiado de preparo, diagnóstico da xícara e glossário
+- Materiais para download: apostila, livro de receitas, roda de aromas e fichas para imprimir
 - Certificado em português ou inglês, gerado ao concluir o curso
 - Progresso salvo no navegador do aluno
 
@@ -21,6 +22,7 @@ https://celoma-maker.github.io/Curso-de-Barista/
 ## Estrutura
 
 - `index.html`: o curso completo (conteúdo, ferramentas e certificado)
+- `materiais/`: PDFs liberados para os alunos
 - `img/`: fotos da Escola do Barista e do Bilu Coffee, já otimizadas para a web
 
 ## Como adicionar os vídeos das aulas
